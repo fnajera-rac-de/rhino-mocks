@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using Castle.DynamicProxy;
-using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Exceptions;
 using Rhino.Mocks.Expectations;
 using Rhino.Mocks.Helpers;
@@ -16,6 +14,28 @@ namespace Rhino.Mocks
     /// </summary>
     public static class RepositoryExtensions
     {
+        /// <summary>
+        /// Sets the unexpected behavior of a mocked object
+        /// </summary>
+        /// <typeparam name="T">the mocked type</typeparam>
+        /// <param name="instance">the mocked instance</param>
+        /// <param name="behavior">the behavior for unexpected calls</param>
+        /// <exception cref="System.ArgumentNullException">thrown when the instance is null</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">thrown when the instance cannot be identified as a mocked object</exception>
+        public static void SetUnexpectedBehavior<T>(this T instance, UnexpectedCallBehaviors behavior)
+            where T : class
+        {
+            if (instance == null)
+                throw new ArgumentNullException("instance", "SetUnexpectedBehavior cannot be performed on a null object or instance.");
+
+            var invocation = instance as IInvocation;
+            var mock = GetMockInstance(instance);
+            if (mock == null)
+                throw new ArgumentOutOfRangeException("instance", "SetUnexpectedBehavior can only be performed on a mocked object or instance.");
+
+            mock.UnexpectedCallBehavior = behavior;
+        }
+
         /// <summary>
         /// Asserts the given method was called against the mocked object
         /// </summary>
@@ -826,6 +846,28 @@ namespace Rhino.Mocks
                     .GetMockedInstanceFromProxy(instance);
 
                 return proxiedInstance as IMockExpectationContainer;
+            }
+
+            return null;
+        }
+
+        private static IMockInstance GetMockInstance(object instance)
+        {
+            if (typeof(Delegate).IsAssignableFrom(instance.GetType()))
+            {
+                var instanceDelegate = (Delegate) instance;
+                instance = instanceDelegate.Target;
+            }
+
+            if (instance is IMockInstance)
+                return instance as IMockInstance;
+
+            if (RepositoryForRemoting.IsRemotingProxy(instance))
+            {
+                var proxiedInstance = RepositoryForRemoting
+                    .GetMockedInstanceFromProxy(instance);
+
+                return proxiedInstance;
             }
 
             return null;

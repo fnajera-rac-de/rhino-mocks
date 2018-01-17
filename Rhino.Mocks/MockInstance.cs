@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Castle.DynamicProxy;
 using Rhino.Mocks.Expectations;
+using Rhino.Mocks.Helpers;
 using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks
@@ -39,6 +40,12 @@ namespace Rhino.Mocks
         {
             get { return types; }
         }
+
+        /// <summary>
+        /// Defines the behavior of unexpected calls.
+        /// By default, BaseOrThrow.
+        /// </summary>
+        public UnexpectedCallBehaviors UnexpectedCallBehavior { get; set; }
 
         /// <summary>
         /// Indicates whether or not the mock instance
@@ -77,6 +84,7 @@ namespace Rhino.Mocks
             eventSubscriptions = new Dictionary<string, Delegate>();
             expectedProperties = new Dictionary<string, Expectation>();
             hashcode = MockInstanceEquality.NextHash;
+            UnexpectedCallBehavior = UnexpectedCallBehaviors.BaseOrThrow;
         }
 
         /// <summary>
@@ -463,13 +471,32 @@ namespace Rhino.Mocks
         /// <returns></returns>
         public object HandleUnexpectedMethodCall(IInvocation invocation, MethodInfo method, object[] arguments)
         {
-            if (IsPartialInstance && !method.IsAbstract)
+            if (UnexpectedCallBehavior == UnexpectedCallBehaviors.BaseOrDefault || UnexpectedCallBehavior == UnexpectedCallBehaviors.BaseOrThrow)
+            {
+                if (IsPartialInstance && !method.IsAbstract)
+                {
+                    RhinoMocks.Logger.LogUnexpectedMethodCall(invocation,
+                        "Partial: Calling original method.");
+
+                    invocation.Proceed();
+                    return invocation.ReturnValue;
+                }
+            }
+
+            if (UnexpectedCallBehavior == UnexpectedCallBehaviors.BaseOrThrow)
             {
                 RhinoMocks.Logger.LogUnexpectedMethodCall(invocation,
-                    "Partial: Calling original method.");
+                    "Mock: No expectation or stub created, no base method found and throw requested.");
 
-                invocation.Proceed();
-                return invocation.ReturnValue;
+                throw new Rhino.Mocks.Exceptions.ExpectationViolationException("No expectation or stub found for " + MethodFormatter.ToString(invocation, invocation.Method, invocation.Arguments));
+            }
+
+            if (UnexpectedCallBehavior == UnexpectedCallBehaviors.Throw)
+            {
+                RhinoMocks.Logger.LogUnexpectedMethodCall(invocation,
+                    "Mock: No expectation or stub created and throw requested.");
+
+                throw new Rhino.Mocks.Exceptions.ExpectationViolationException("No expectation or stub found for " + MethodFormatter.ToString(invocation, invocation.Method, invocation.Arguments));
             }
 
             if (method.IsSpecialName)

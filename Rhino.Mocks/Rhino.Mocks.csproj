@@ -150,6 +150,7 @@
     <Compile Include="RhinoSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RhinoMocks.cs" />
+    <Compile Include="UnexpectedCallBehaviors.cs" />
     <Compile Include="__ProtectAttribute.cs" />
     <None Include="..\meisinger-open-source.snk">
       <Link>meisinger-open-source.snk</Link>
