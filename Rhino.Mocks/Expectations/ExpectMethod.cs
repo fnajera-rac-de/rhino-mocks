@@ -14,7 +14,7 @@ namespace Rhino.Mocks.Expectations
     public class ExpectMethod : Expectation, IMethodOptions
     {
         private readonly IRepeatOptions repeatOptions;
-        
+
         internal override ExpectationType Type
         {
             get { return ExpectationType.Method; }
@@ -27,7 +27,7 @@ namespace Rhino.Mocks.Expectations
         {
             get { return repeatOptions; }
         }
-        
+
         /// <summary>
         /// Constraints against argument of the expectation
         /// </summary>
@@ -255,7 +255,7 @@ namespace Rhino.Mocks.Expectations
             if (ThrowsException)
                 throw new InvalidOperationException(
                     "Can set only a single exception to throw on the same method call.");
-            
+
             ThrowsException = true;
             ExceptionToThrow = new TException();
             return this;
@@ -624,7 +624,7 @@ namespace Rhino.Mocks.Expectations
             if (HasReturnValue || ThrowsException || (HasDelegateToInvoke && DelegateReturnsValue))
                 throw new InvalidOperationException(
                     "Can set only a single return value or exception to throw or delegate to execute on the same method call.");
-            
+
             SetReturnValue(value);
             return this;
         }
@@ -647,7 +647,7 @@ namespace Rhino.Mocks.Expectations
             SetReturnValue(func());
             return this;
         }
-        
+
         /// <summary>
         /// Throw exception of the given type when
         /// the method is called

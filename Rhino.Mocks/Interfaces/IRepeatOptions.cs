@@ -26,7 +26,7 @@ namespace Rhino.Mocks.Interfaces
         /// <param name="expected"></param>
         /// <returns></returns>
         IMethodOptions Times(int expected);
-        
+
         /// <summary>
         /// Expectation will be called at least
         /// as many times as the given number
@@ -34,7 +34,7 @@ namespace Rhino.Mocks.Interfaces
         /// <param name="expected"></param>
         /// <returns></returns>
         IMethodOptions AtLeast(int expected);
-        
+
         /// <summary>
         /// Expectation could be called as many
         /// times as the given number
@@ -42,7 +42,7 @@ namespace Rhino.Mocks.Interfaces
         /// <param name="expected"></param>
         /// <returns></returns>
         IMethodOptions AtMost(int expected);
-        
+
         /// <summary>
         /// Expectation may be called
         /// </summary>

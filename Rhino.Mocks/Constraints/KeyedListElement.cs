@@ -9,7 +9,7 @@ namespace Rhino.Mocks.Constraints
     /// </summary>
     public class KeyedListElement<T> : AbstractConstraint
     {
-        private const BindingFlags GetFlags = 
+        private const BindingFlags GetFlags =
             BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.DeclaredOnly | BindingFlags.Instance;
 
         private readonly T key;

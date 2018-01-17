@@ -105,7 +105,7 @@ namespace Rhino.Mocks.Expectations
 
                 property = method.DeclaringType.GetProperty(propertyName, types);
             }
-            
+
             MethodGet = property.GetGetMethod(true);
             MethodSet = property.GetSetMethod(true);
 

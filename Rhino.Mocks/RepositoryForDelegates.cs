@@ -41,7 +41,7 @@ namespace Rhino.Mocks
         {
             var count = Interlocked.Increment(ref counter);
             var dynamicName = string.Format("ProxyDelegate_{0}_{1}", type.Name, count);
-            
+
             var method = type.GetMethod("Invoke");
             var returnType = method.ReturnType;
             var parameters = method.GetParameters();

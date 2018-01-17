@@ -43,7 +43,7 @@ namespace Rhino.Mocks.Constraints
                 return false;
 
             var func = expression.Compile();
-            return (bool)func.DynamicInvoke(arg);
+            return (bool) func.DynamicInvoke(arg);
         }
     }
 }

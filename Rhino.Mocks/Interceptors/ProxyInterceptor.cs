@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Castle.DynamicProxy;
 using Rhino.Mocks.Expectations;
@@ -58,7 +57,7 @@ namespace Rhino.Mocks.Interceptors
                     invocation.ReturnValue = IdentifyDefaultValue(type);
                     return;
                 }
-                
+
                 var recursive = ParseRecursiveExpectation(container, expectation, type);
                 recursive.HandleMethodCall(method, arguments);
                 invocation.ReturnValue = recursive.ReturnValue;

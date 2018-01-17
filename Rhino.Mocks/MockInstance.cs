@@ -68,7 +68,7 @@ namespace Rhino.Mocks
         /// Proxy of mocked object
         /// </summary>
         public object ProxyInstance { get; set; }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -243,7 +243,7 @@ namespace Rhino.Mocks
 
                 return HandleUnexpectedMethodCall(invocation, method, arguments);
             }
-            
+
             RhinoMocks.Logger.LogExpectedMethodCall(invocation);
             expectation.AddActualCall(actual);
 
@@ -253,7 +253,7 @@ namespace Rhino.Mocks
 
                 var callback = expectation.DelegateToInvoke;
                 var callbackParameters = callback.Method.GetParameters();
-                
+
                 try
                 {
                     if (callbackParameters.Length == 0)
@@ -347,7 +347,7 @@ namespace Rhino.Mocks
             var actual = new Actuals(method, arguments);
             actuals.Add(actual);
 
-            var subscription = (Delegate)arguments[0];
+            var subscription = (Delegate) arguments[0];
             HandleEventSubscription(method, subscription);
 
             var eventCollection = container
@@ -531,7 +531,7 @@ namespace Rhino.Mocks
                     RhinoMocks.Logger.LogUnexpectedMethodCall(invocation,
                         "Event: Dynamic handling of event.");
 
-                    var subscription = (Delegate)arguments[0];
+                    var subscription = (Delegate) arguments[0];
                     HandleEventSubscription(method, subscription);
                 }
             }
@@ -554,7 +554,7 @@ namespace Rhino.Mocks
                 if (!eventSubscriptions.ContainsKey(removeName))
                     return;
 
-                Delegate removeDelegate = (MulticastDelegate)eventSubscriptions[removeName];
+                Delegate removeDelegate = (MulticastDelegate) eventSubscriptions[removeName];
                 removeDelegate = MulticastDelegate.Remove(removeDelegate, subscription);
                 eventSubscriptions[removeName] = removeDelegate;
                 return;
@@ -567,7 +567,7 @@ namespace Rhino.Mocks
                 return;
             }
 
-            Delegate addDelegate = (MulticastDelegate)eventSubscriptions[addName];
+            Delegate addDelegate = (MulticastDelegate) eventSubscriptions[addName];
             addDelegate = MulticastDelegate.Combine(addDelegate, subscription);
             eventSubscriptions[addName] = addDelegate;
         }

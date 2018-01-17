@@ -1,5 +1,5 @@
-﻿using Rhino.Mocks.Interfaces;
-using System;
+﻿using System;
+using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Expectations
 {
@@ -185,7 +185,7 @@ namespace Rhino.Mocks.Expectations
             if (expectation.HasReturnValue)
                 throw new InvalidOperationException(
                     "After specifying Repeat.Never(), you cannot specify a return value, exception to throw or an action to execute.");
-            
+
             expectation.SetExpectedCount(new Range(0, 0));
             return expectation;
         }

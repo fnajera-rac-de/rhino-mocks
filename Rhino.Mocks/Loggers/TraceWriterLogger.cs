@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using Castle.DynamicProxy;
 using Rhino.Mocks.Helpers;
 using Rhino.Mocks.Interfaces;

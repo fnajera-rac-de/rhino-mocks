@@ -17,7 +17,7 @@ namespace Rhino.Mocks.Constraints
         /// </summary>
         public override string Message
         {
-            get 
+            get
             {
                 var buffer = new StringBuilder();
                 if (largerThan)

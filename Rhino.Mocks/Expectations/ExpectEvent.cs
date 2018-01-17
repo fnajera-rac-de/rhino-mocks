@@ -26,7 +26,7 @@ namespace Rhino.Mocks.Expectations
         /// Get Method of the expectation
         /// </summary>
         public MethodInfo Method { get; set; }
-        
+
         /// <summary>
         /// constructor
         /// </summary>
@@ -143,7 +143,7 @@ namespace Rhino.Mocks.Expectations
 
             return true;
         }
-        
+
         /// <summary>
         /// Ignores all arguments removing any existing argument constraints
         /// </summary>
@@ -157,7 +157,7 @@ namespace Rhino.Mocks.Expectations
             Arguments = constraints;
             return this;
         }
-        
+
         /// <summary>
         /// Throw exception of the given type when
         /// the method is called

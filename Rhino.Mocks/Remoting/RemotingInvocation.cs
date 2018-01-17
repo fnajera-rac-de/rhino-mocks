@@ -20,7 +20,7 @@ namespace Rhino.Mocks.Remoting
 
         public Type[] GenericArguments
         {
-            get 
+            get
             {
                 var method = message.MethodBase;
                 return (method.IsGenericMethod)
@@ -73,7 +73,7 @@ namespace Rhino.Mocks.Remoting
 
         public MethodInfo GetConcreteMethod()
         {
-            return (MethodInfo)message.MethodBase;
+            return (MethodInfo) message.MethodBase;
         }
 
         public MethodInfo GetConcreteMethodInvocationTarget()
@@ -89,6 +89,6 @@ namespace Rhino.Mocks.Remoting
         public void SetArgumentValue(int index, object value)
         {
             throw new NotSupportedException();
-        }        
+        }
     }
 }

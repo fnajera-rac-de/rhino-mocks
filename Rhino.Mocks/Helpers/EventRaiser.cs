@@ -48,7 +48,7 @@ namespace Rhino.Mocks.Helpers
                 var expected = parameters.Length;
                 var count = (args != null) ? args.Length : 0;
 
-                var message = 
+                var message =
                     string.Format("An attempt was made to raise an event with the wrong number of arguments. Expected {0} but was {1}",
                         expected, count);
 
@@ -81,7 +81,7 @@ namespace Rhino.Mocks.Helpers
 
         private void PreserveStack(Exception exception)
         {
-            var method = typeof(Exception).GetMethod("InternalPreserveStackTrace", 
+            var method = typeof(Exception).GetMethod("InternalPreserveStackTrace",
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
             method.Invoke(exception, null);

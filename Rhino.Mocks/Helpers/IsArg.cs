@@ -207,7 +207,7 @@ namespace Rhino.Mocks.Helpers
 
             return obj;
         }
-        
+
         private object ConvertObjectType(object obj)
         {
             var type = typeof(T);

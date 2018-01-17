@@ -19,7 +19,7 @@ namespace Rhino.Mocks.Expectations
         /// Identifies the type of expectation
         /// </summary>
         internal abstract ExpectationType Type { get; }
-        
+
         /// <summary>
         /// The number of times the expectation was actually called
         /// </summary>
@@ -35,7 +35,7 @@ namespace Rhino.Mocks.Expectations
         {
             get { return range; }
         }
-        
+
         /// <summary>
         /// Indicates whether or not the expectation have been met
         /// </summary>
@@ -83,7 +83,7 @@ namespace Rhino.Mocks.Expectations
                 return (actualCount >= maximum.Value);
             }
         }
-        
+
         /// <summary>
         /// Indicates whether or not actual calls have been made against
         /// this expectation
@@ -122,7 +122,7 @@ namespace Rhino.Mocks.Expectations
         /// <summary>
         /// Return value for the expectation
         /// </summary>
-        public virtual object ReturnValue 
+        public virtual object ReturnValue
         {
             get { return null; }
         }
@@ -130,7 +130,7 @@ namespace Rhino.Mocks.Expectations
         /// <summary>
         /// Return type for the expectation
         /// </summary>
-        public virtual Type ReturnType 
+        public virtual Type ReturnType
         {
             get { return typeof(void); }
         }
@@ -214,7 +214,7 @@ namespace Rhino.Mocks.Expectations
         /// <param name="method"></param>
         /// <param name="arguments"></param>
         public abstract void HandleMethodCall(MethodInfo method, object[] arguments);
-        
+
         /// <summary>
         /// Checks that the given method and arguments
         /// match the expectation and argument constraints
@@ -258,7 +258,7 @@ namespace Rhino.Mocks.Expectations
     {
         private T returnValue;
         private bool returnValueIsSet;
-        
+
         /// <summary>
         /// Indicates whether or not the expectation has a return type
         /// </summary>
@@ -298,7 +298,7 @@ namespace Rhino.Mocks.Expectations
         /// <param name="value"></param>
         public override void SetReturnValue(object value)
         {
-            returnValue = (T)value;
+            returnValue = (T) value;
             returnValueIsSet = true;
         }
     }

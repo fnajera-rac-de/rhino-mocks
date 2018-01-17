@@ -11,7 +11,7 @@ namespace Rhino.Mocks.Interceptors
     public class MockInterceptor : MarshalByRefObject, IInterceptor
     {
         private readonly IMockInstance instance;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>

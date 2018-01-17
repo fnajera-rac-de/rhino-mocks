@@ -33,7 +33,7 @@ namespace Rhino.Mocks.Constraints
                     buffer.Append(current)
                         .Append(", ");
                 }
-                
+
                 return buffer
                     .Remove(buffer.Length - 2, 2)
                     .Append("]")

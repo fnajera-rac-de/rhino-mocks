@@ -17,7 +17,7 @@ namespace Rhino.Mocks.Constraints
         {
             get { return string.Format("type of {{{0}}}", type.FullName); }
         }
-        
+
         /// <summary>
         /// constructor
         /// </summary>

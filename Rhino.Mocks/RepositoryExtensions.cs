@@ -833,7 +833,7 @@ namespace Rhino.Mocks
         {
             if (typeof(Delegate).IsAssignableFrom(instance.GetType()))
             {
-                var instanceDelegate = (Delegate)instance;
+                var instanceDelegate = (Delegate) instance;
                 instance = instanceDelegate.Target;
             }
 

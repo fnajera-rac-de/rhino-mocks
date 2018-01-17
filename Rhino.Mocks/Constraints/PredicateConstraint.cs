@@ -46,7 +46,7 @@ namespace Rhino.Mocks.Constraints
             if (arg != null && !typeof(T).IsAssignableFrom(arg.GetType()))
                 return false;
 
-            return predicate((T)arg);
+            return predicate((T) arg);
         }
     }
 }

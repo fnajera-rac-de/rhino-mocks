@@ -4,11 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Internal;
+using Rhino.Mocks.Expectations;
 using Rhino.Mocks.Helpers;
 using Rhino.Mocks.Interceptors;
 using Rhino.Mocks.Interfaces;
-using Rhino.Mocks.Remoting;
-using Rhino.Mocks.Expectations;
 
 namespace Rhino.Mocks
 {
@@ -23,7 +22,7 @@ namespace Rhino.Mocks
         private readonly RepositoryForDelegates delegateRepository;
         private readonly ProxyGenerationOptions generatorOptions;
         private readonly ProxyGenerationOptions defaultOptions;
-        
+
         /// <summary>
         /// Static Constructor
         /// </summary>
@@ -225,7 +224,7 @@ namespace Rhino.Mocks
             if (remoteType.IsAssignableFrom(type))
             {
                 if (arguments == null || arguments.Length == 0)
-                    return (T)repository.CreateMockRemoted(type);
+                    return (T) repository.CreateMockRemoted(type);
             }
 
             return repository.CreateMockObject<T>(extraTypes, arguments);
@@ -242,7 +241,7 @@ namespace Rhino.Mocks
             var type = typeof(T);
             var repository = new MockRepository();
 
-            return (T)repository.CreateMockRemoted(type);
+            return (T) repository.CreateMockRemoted(type);
         }
 
         /// <summary>
@@ -416,7 +415,7 @@ namespace Rhino.Mocks
         {
             if (typeof(Delegate).IsAssignableFrom(instance.GetType()))
             {
-                var instanceDelegate = (Delegate)instance;
+                var instanceDelegate = (Delegate) instance;
                 return instanceDelegate.Target as IMockExpectationContainer;
             }
 
@@ -442,10 +441,10 @@ namespace Rhino.Mocks
 
             try
             {
-                var proxy = generator.CreateClassProxy(type, interfaces.ToArray(), 
+                var proxy = generator.CreateClassProxy(type, interfaces.ToArray(),
                     defaultOptions, arguments, mockInterceptor, proxyInterceptor, objectInterceptor);
 
-                var mocked = (IMockInstance)proxy;
+                var mocked = (IMockInstance) proxy;
                 mocked.IsPartialInstance = isPartial;
                 mocked.ConstructorArguments = arguments;
 
@@ -507,7 +506,7 @@ namespace Rhino.Mocks
             var proxyInterceptor = new ProxyInterceptor(instance);
             var generator = IdentifyGenerator(type);
 
-            var proxy = generator.CreateInterfaceProxyWithoutTarget(type, interfaces.ToArray(), 
+            var proxy = generator.CreateInterfaceProxyWithoutTarget(type, interfaces.ToArray(),
                 generatorOptions, mockInterceptor, proxyInterceptor, objectInterceptor);
 
             instance.ProxyInstance = proxy;
