@@ -27,9 +27,8 @@
 #endregion
 
 
-using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
@@ -37,9 +36,10 @@ namespace Rhino.Mocks.Tests
     {
         private IDemo demo;
 
-		public DoNotExpectTests()
+        public DoNotExpectTests()
         {
             demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]

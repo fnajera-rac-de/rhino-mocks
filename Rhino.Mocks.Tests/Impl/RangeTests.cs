@@ -27,40 +27,40 @@
 #endregion
 
 
-using Xunit;
 using Rhino.Mocks.Expectations;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.Impl
 {
-	public class RangeTests
-	{
-		[Fact]
-		public void RangePropetiesReturnTheSameValuesAsThosePassedInCtor()
-		{
-			Range range = new Range(30, 50);
-			Assert.Equal(30, range.Minimum);
-			Assert.Equal(50, range.Maximum);
-		}
+    public class RangeTests
+    {
+        [Fact]
+        public void RangePropetiesReturnTheSameValuesAsThosePassedInCtor()
+        {
+            Range range = new Range(30, 50);
+            Assert.Equal(30, range.Minimum);
+            Assert.Equal(50, range.Maximum);
+        }
 
-		[Fact]
-		public void RangeToString()
-		{
-			Range range = new Range(30, 50);
-			Assert.Equal("30..50", range.ToString());
-		}
+        [Fact]
+        public void RangeToString()
+        {
+            Range range = new Range(30, 50);
+            Assert.Equal("30..50", range.ToString());
+        }
 
-		[Fact]
-		public void RangeToStringWhenMinMaxEqual()
-		{
-			Range range = new Range(30, 30);
-			Assert.Equal("30", range.ToString());
-		}
+        [Fact]
+        public void RangeToStringWhenMinMaxEqual()
+        {
+            Range range = new Range(30, 30);
+            Assert.Equal("30", range.ToString());
+        }
 
-		[Fact]
-		public void RangeToStringWhenMinZeroAndMaxNonZero()
-		{
-			Range range = new Range(0, 30);
-			Assert.Equal("30", range.ToString());
-		}
-	}
+        [Fact]
+        public void RangeToStringWhenMinZeroAndMaxNonZero()
+        {
+            Range range = new Range(0, 30);
+            Assert.Equal("30", range.ToString());
+        }
+    }
 }

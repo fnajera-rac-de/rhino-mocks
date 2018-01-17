@@ -32,36 +32,38 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Mike
-	{
-		[Fact]
-		public void Can_do_nested_virtual_calls()
-		{
-			var subject = MockRepository.Partial<SUT>();
-			subject.VirtualMethod();
+    public class FieldProblem_Mike
+    {
+        [Fact]
+        public void Can_do_nested_virtual_calls()
+        {
+            var subject = MockRepository.Partial<SUT>();
+            subject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            subject.VirtualMethod();
 
-			subject.AssertWasCalled(it => it.NestedVirtualMethod());
-		}
+            subject.AssertWasCalled(it => it.NestedVirtualMethod());
+        }
 
-		[Fact]
-		public void Can_do_nested_virtual_calls_when_not_called()
-		{
-			var subject = MockRepository.Partial<SUT>();
-			
-			Assert.Throws<ExpectationViolationException>(
-				() => subject.AssertWasCalled(it => it.NestedVirtualMethod()));
-		}
+        [Fact]
+        public void Can_do_nested_virtual_calls_when_not_called()
+        {
+            var subject = MockRepository.Partial<SUT>();
+            subject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-		public class SUT
-		{
-			public virtual void VirtualMethod()
-			{
-				NestedVirtualMethod();
-			}
+            Assert.Throws<ExpectationViolationException>(
+                () => subject.AssertWasCalled(it => it.NestedVirtualMethod()));
+        }
 
-			public virtual void NestedVirtualMethod()
-			{
-			}
-		}
-	}
+        public class SUT
+        {
+            public virtual void VirtualMethod()
+            {
+                NestedVirtualMethod();
+            }
+
+            public virtual void NestedVirtualMethod()
+            {
+            }
+        }
+    }
 }

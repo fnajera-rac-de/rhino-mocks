@@ -29,7 +29,6 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests
 {
@@ -39,6 +38,7 @@ namespace Rhino.Mocks.Tests
         public void CallOriginalMethodOnPropGetAndSet()
         {
             MockingClassesTests.DemoClass demo = MockRepository.Partial<MockingClassesTests.DemoClass>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.Prop)
                 .Repeat.Any()
@@ -60,6 +60,7 @@ namespace Rhino.Mocks.Tests
         public void CantCallOriginalMethodOnInterface()
         {
             IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.ReturnIntNoArgs())
@@ -70,6 +71,7 @@ namespace Rhino.Mocks.Tests
         public void CantCallOriginalMethodOnAbstractMethod()
         {
             MockingClassesTests.AbstractDemo demo = MockRepository.Partial<MockingClassesTests.AbstractDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.Six())

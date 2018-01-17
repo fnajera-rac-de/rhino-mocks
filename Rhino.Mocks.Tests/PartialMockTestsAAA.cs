@@ -29,8 +29,8 @@
 #endregion
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
@@ -42,6 +42,7 @@ namespace Rhino.Mocks.Tests
         public PartialMockTestsAAA()
         {
             abs = MockRepository.Partial<AbstractClass>();
+            abs.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
@@ -102,6 +103,7 @@ namespace Rhino.Mocks.Tests
         public void CanMockWithCtorParams()
         {
             var withParameters = MockRepository.Partial<WithParameters>(1);
+            withParameters.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             withParameters.Expect(x => x.Int)
                 .Return(4);
 

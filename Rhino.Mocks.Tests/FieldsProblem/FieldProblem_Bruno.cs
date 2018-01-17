@@ -27,7 +27,6 @@
 #endregion
 
 
-using System;
 using System.EnterpriseServices;
 using Xunit;
 
@@ -46,6 +45,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             ServiceDomain.Enter(new ServiceConfig());
 
             ISomething something = MockRepository.Mock<ISomething>();
+            something.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             something.VerifyAllExpectations();
 
             ContextUtil.SetAbort();

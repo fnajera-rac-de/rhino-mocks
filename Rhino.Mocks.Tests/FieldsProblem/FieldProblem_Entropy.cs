@@ -27,26 +27,25 @@
 #endregion
 
 
-using System;
-using System.Text;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
     public class FieldProblem_Entropy
-	{
-		public interface IMyObject
-		{
-			void DoSomething();
-			void DoSomethingElse();
-			object SomeProperty { get; set; }
-		}
+    {
+        public interface IMyObject
+        {
+            void DoSomething();
+            void DoSomethingElse();
+            object SomeProperty { get; set; }
+        }
 
-		[Fact]
-		public void NestedOrderedAndAtLeastOnce()
-		{
-			IMyObject myObject = MockRepository.Mock<IMyObject>();
+        [Fact]
+        public void NestedOrderedAndAtLeastOnce()
+        {
+            IMyObject myObject = MockRepository.Mock<IMyObject>();
+            myObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myObject.Expect(x => x.SomeProperty)
                 .Return(null)
@@ -54,73 +53,55 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
             myObject.Expect(x => x.DoSomething());
 
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			myObject.DoSomething();
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            myObject.DoSomething();
 
             myObject.VerifyAllExpectations();
-		}
-        
-		[Fact]
-		public void ShouldFailInNestedOrderringIfMethodWasNotCalled()
-		{
-			IMyObject myObject = MockRepository.Mock<IMyObject>();
+        }
+
+        [Fact]
+        public void ShouldFailInNestedOrderringIfMethodWasNotCalled()
+        {
+            IMyObject myObject = MockRepository.Mock<IMyObject>();
+            myObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myObject.Expect(x => x.DoSomethingElse())
                 .Repeat.AtLeast(1);
 
             myObject.Expect(x => x.DoSomething());
 
-			myObject.DoSomethingElse();
-			Assert.Throws<ExpectationViolationException>(
-				() => myObject.VerifyExpectations(true));
-		}
+            myObject.DoSomethingElse();
+            Assert.Throws<ExpectationViolationException>(
+                () => myObject.VerifyExpectations(true));
+        }
 
-		[Fact]
-		public void NestedInorderedAndAtLeastOnce()
-		{
-			IMyObject myObject = MockRepository.Mock<IMyObject>();
+        [Fact]
+        public void NestedInorderedAndAtLeastOnce()
+        {
+            IMyObject myObject = MockRepository.Mock<IMyObject>();
+            myObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myObject.Expect(x => x.SomeProperty)
                 .Return(null)
                 .Repeat.AtLeast(1);
 
             myObject.Expect(x => x.DoSomething());
-			
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			myObject.DoSomething();
+
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            myObject.DoSomething();
 
             myObject.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void UnorderedAndAtLeastOnce_CallingAnExtraMethod()
-		{
-			IMyObject myObject = MockRepository.Mock<IMyObject>();
-
-            myObject.Expect(x => x.SomeProperty)
-                .Return(null)
-                .Repeat.AtLeast(1);
-
-            myObject.Expect(x => x.DoSomethingElse());
-
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-
-            myObject.DoSomething();
-
-			Assert.Throws<ExpectationViolationException>(
-				() => myObject.VerifyExpectations(true));
-		}
-
-		[Fact]
-		public void OrderedAndAtLeastOnce_CallingAnExtraMethod()
-		{
-			IMyObject myObject = MockRepository.Mock<IMyObject>();
+        [Fact]
+        public void UnorderedAndAtLeastOnce_CallingAnExtraMethod()
+        {
+            IMyObject myObject = MockRepository.Mock<IMyObject>();
+            myObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myObject.Expect(x => x.SomeProperty)
                 .Return(null)
@@ -128,14 +109,36 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
             myObject.Expect(x => x.DoSomethingElse());
 
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
-			Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
 
             myObject.DoSomething();
 
-			Assert.Throws<ExpectationViolationException>(
-				() => myObject.VerifyExpectations(true));
-		}
-	}
+            Assert.Throws<ExpectationViolationException>(
+                () => myObject.VerifyExpectations(true));
+        }
+
+        [Fact]
+        public void OrderedAndAtLeastOnce_CallingAnExtraMethod()
+        {
+            IMyObject myObject = MockRepository.Mock<IMyObject>();
+            myObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
+            myObject.Expect(x => x.SomeProperty)
+                .Return(null)
+                .Repeat.AtLeast(1);
+
+            myObject.Expect(x => x.DoSomethingElse());
+
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+            Assert.Null(myObject.SomeProperty);
+
+            myObject.DoSomething();
+
+            Assert.Throws<ExpectationViolationException>(
+                () => myObject.VerifyExpectations(true));
+        }
+    }
 }

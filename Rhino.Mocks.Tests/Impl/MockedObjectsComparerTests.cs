@@ -27,61 +27,62 @@
 #endregion
 
 
-using System;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.Impl
 {
     public class MockedObjectsComparerTests
-	{
-		IDemo one;
+    {
+        IDemo one;
         IDemo two;
 
-		public MockedObjectsComparerTests()
-		{
+        public MockedObjectsComparerTests()
+        {
             one = MockRepository.Mock<IDemo>();
+            one.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             two = MockRepository.Mock<IDemo>();
-		}
+            two.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		[Fact]
-		public void FalseForDifferenceMocks()
-		{
+        [Fact]
+        public void FalseForDifferenceMocks()
+        {
             bool condition = (MockInstanceEquality.Instance.Compare(one, two) == 0);
-			Assert.False(condition);
-		}
+            Assert.False(condition);
+        }
 
-		[Fact]
-		public void TrueForSameObject()
-		{
+        [Fact]
+        public void TrueForSameObject()
+        {
             bool condition = (MockInstanceEquality.Instance.Compare(one, one) == 0);
-			Assert.True(condition);
-		}
+            Assert.True(condition);
+        }
 
-		[Fact]
-		public void FalseForOneMockAndOneNull()
-		{
+        [Fact]
+        public void FalseForOneMockAndOneNull()
+        {
             bool condition = (MockInstanceEquality.Instance.Compare(one, null) == 0);
-			Assert.False(condition);
+            Assert.False(condition);
 
             condition = (MockInstanceEquality.Instance.Compare(null, one) == 0);
-			Assert.False(condition);
-		}
+            Assert.False(condition);
+        }
 
-		[Fact]
-		public void TrueForBothNulls()
-		{
+        [Fact]
+        public void TrueForBothNulls()
+        {
             bool condition = (MockInstanceEquality.Instance.Compare(null, null) == 0);
-			Assert.True(condition);
-		}
+            Assert.True(condition);
+        }
 
-		[Fact]
-		public void FalseForOneMockAndOneNot()
-		{
+        [Fact]
+        public void FalseForOneMockAndOneNot()
+        {
             bool condition = (MockInstanceEquality.Instance.Compare(one, new object()) == 0);
-			Assert.False(condition);
+            Assert.False(condition);
 
             condition = (MockInstanceEquality.Instance.Compare(new object(), one) == 0);
-			Assert.False(condition);
-		}
-	}
+            Assert.False(condition);
+        }
+    }
 }

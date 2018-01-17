@@ -27,8 +27,6 @@
 #endregion
 
 
-using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -76,7 +74,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         {
             //Setup a mock view and ISumbition
             IView myMockView = MockRepository.Mock<IView>();
+            myMockView.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             ISumbition myMockSubmition = MockRepository.Mock<ISumbition>();
+            myMockSubmition.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             //Record expectations
             myMockView.Expect(x => x.UserID)
@@ -94,7 +94,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
             myMockSubmition.Expect(x => x.Save());
 
-            
+
             Presneter myPresenter = new Presneter(myMockView, myMockSubmition);
             myPresenter.Sumbit();
 

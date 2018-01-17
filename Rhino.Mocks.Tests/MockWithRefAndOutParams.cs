@@ -28,26 +28,27 @@
 
 
 using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class MockWithRefAndOutParams
-	{
-		private IRefAndOut target;
-		private RemotingProxyWithOutRef remotingTarget;
+    public class MockWithRefAndOutParams
+    {
+        private IRefAndOut target;
+        private RemotingProxyWithOutRef remotingTarget;
 
-		public MockWithRefAndOutParams()
-		{
-			target = MockRepository.Mock<IRefAndOut>();
-			remotingTarget = MockRepository.Mock<RemotingProxyWithOutRef>();
-		}
+        public MockWithRefAndOutParams()
+        {
+            target = MockRepository.Mock<IRefAndOut>();
+            target.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            remotingTarget = MockRepository.Mock<RemotingProxyWithOutRef>();
+            remotingTarget.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		[Fact]
-		public void RefString()
-		{
-			string s = "";
+        [Fact]
+        public void RefString()
+        {
+            string s = "";
 
             target.Expect(x => x.RefStr(ref s))
                 .DoInstead(new RefStrDel(SayHello));
@@ -55,154 +56,154 @@ namespace Rhino.Mocks.Tests
             target.RefStr(ref s);
 
             Assert.Equal("Hello", s);
-		}
+        }
 
-		[Fact]
-		public void OutString()
-		{
-			string s = "";
+        [Fact]
+        public void OutString()
+        {
+            string s = "";
 
             target.Expect(x => x.OutStr(out s))
                 .DoInstead(new OutStrDel(OutSayHello));
 
-			target.OutStr(out s);
+            target.OutStr(out s);
 
-			Assert.Equal("Hello", s);
-		}
+            Assert.Equal("Hello", s);
+        }
 
-		[Fact]
-		public void OutInt()
-		{
-			int i = 0;
+        [Fact]
+        public void OutInt()
+        {
+            int i = 0;
 
             target.Expect(x => x.OutInt(out i))
                 .DoInstead(new OutIntDel(OutFive));
 
-			target.OutInt(out i);
+            target.OutInt(out i);
 
-			Assert.Equal(5, i);
-		}
+            Assert.Equal(5, i);
+        }
 
-		[Fact]
-		public void RefInt()
-		{
-			int i = 0;
+        [Fact]
+        public void RefInt()
+        {
+            int i = 0;
 
             target.Expect(x => x.RefInt(ref i))
                 .DoInstead(new RefIntDel(RefFive));
 
-			target.RefInt(ref i);
+            target.RefInt(ref i);
 
-			Assert.Equal(5, i);
-		}
+            Assert.Equal(5, i);
+        }
 
-		[Fact]
-		public void RemotingRefString()
-		{
-			string s = "";
+        [Fact]
+        public void RemotingRefString()
+        {
+            string s = "";
 
             remotingTarget.Expect(x => x.RefStr(ref s))
                 .DoInstead(new RefStrDel(SayHello));
 
-			remotingTarget.RefStr(ref s);
+            remotingTarget.RefStr(ref s);
 
-			Assert.Equal("Hello", s);
-		}
+            Assert.Equal("Hello", s);
+        }
 
-		[Fact]
-		public void RemotingOutString()
-		{
-			string s = "";
+        [Fact]
+        public void RemotingOutString()
+        {
+            string s = "";
 
             remotingTarget.Expect(x => x.OutStr(out s))
                 .DoInstead(new OutStrDel(OutSayHello));
 
-			remotingTarget.OutStr(out s);
+            remotingTarget.OutStr(out s);
 
-			Assert.Equal("Hello", s);
-		}
+            Assert.Equal("Hello", s);
+        }
 
-		[Fact]
-		public void RemotingOutInt()
-		{
-			int i = 0;
+        [Fact]
+        public void RemotingOutInt()
+        {
+            int i = 0;
 
             remotingTarget.Expect(x => x.OutInt(out i))
                 .DoInstead(new OutIntDel(OutFive));
 
-			remotingTarget.OutInt(out i);
+            remotingTarget.OutInt(out i);
 
-			Assert.Equal(5, i);
-		}
+            Assert.Equal(5, i);
+        }
 
-		[Fact]
-		public void RemotingRefInt()
-		{
-			int i = 0;
+        [Fact]
+        public void RemotingRefInt()
+        {
+            int i = 0;
 
             remotingTarget.Expect(x => x.RefInt(ref i))
                 .DoInstead(new RefIntDel(RefFive));
 
-			remotingTarget.RefInt(ref i);
+            remotingTarget.RefInt(ref i);
 
-			Assert.Equal(5, i);
-		}
+            Assert.Equal(5, i);
+        }
 
-		private void RefFive(ref int i)
-		{
-			i = 5;
-		}
+        private void RefFive(ref int i)
+        {
+            i = 5;
+        }
 
-		private void SayHello(ref string s)
-		{
-			s = "Hello";
-		}
+        private void SayHello(ref string s)
+        {
+            s = "Hello";
+        }
 
-		private void OutFive(out int i)
-		{
-			i = 5;
-		}
+        private void OutFive(out int i)
+        {
+            i = 5;
+        }
 
-		private void OutSayHello(out string s)
-		{
-			s = "Hello";
-		}
+        private void OutSayHello(out string s)
+        {
+            s = "Hello";
+        }
 
-		public delegate void RefStrDel(ref string s);
-		public delegate void RefIntDel(ref int i);
-		public delegate void OutStrDel(out string s);
-		public delegate void OutIntDel(out int i);
+        public delegate void RefStrDel(ref string s);
+        public delegate void RefIntDel(ref int i);
+        public delegate void OutStrDel(out string s);
+        public delegate void OutIntDel(out int i);
 
-	}
+    }
 
-	public interface IRefAndOut
-	{
-		void RefInt(ref int i);
-		void RefStr(ref string s);
+    public interface IRefAndOut
+    {
+        void RefInt(ref int i);
+        void RefStr(ref string s);
 
-		void OutStr(out string s);
-		void OutInt(out int i);
-	}
+        void OutStr(out string s);
+        void OutInt(out int i);
+    }
 
-	public class RemotingProxyWithOutRef : MarshalByRefObject
-	{
-		public void RefInt(ref int i)
-		{
-			i = 2;
-		}
+    public class RemotingProxyWithOutRef : MarshalByRefObject
+    {
+        public void RefInt(ref int i)
+        {
+            i = 2;
+        }
 
-		public void RefStr(ref string s)
-		{
-			s = "b";
-		}
+        public void RefStr(ref string s)
+        {
+            s = "b";
+        }
 
-		public void OutStr(out string s)
-		{
-			s = "a";
-		}
-		public void OutInt(out int i)
-		{
-			i = 1;
-		}
-	}
+        public void OutStr(out string s)
+        {
+            s = "a";
+        }
+        public void OutInt(out int i)
+        {
+            i = 1;
+        }
+    }
 }

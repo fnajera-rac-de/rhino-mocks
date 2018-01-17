@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -14,7 +12,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
     {
         String ChildString { get; set; }
     }
-    
+
     public class StubDemoTestFixture : IDisposable
     {
         private IBase _mockBase;
@@ -23,7 +21,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public StubDemoTestFixture()
         {
             _mockBase = MockRepository.Mock<IBase>();
+            _mockBase.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             _mockChild = MockRepository.Mock<IChild>();
+            _mockChild.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         public void Dispose()

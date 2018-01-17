@@ -13,8 +13,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void HostingMockedService()
         {
             var mock = MockRepository.Partial<ServiceClassImpl>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-            ServiceHost host = new ServiceHost((IServiceClassInterface)mock, new Uri("net.tcp://localhost:9876/MyService"));
+            ServiceHost host = new ServiceHost((IServiceClassInterface) mock, new Uri("net.tcp://localhost:9876/MyService"));
             ServiceEndpoint endpoint = host.AddServiceEndpoint(typeof(IServiceClassInterface), new NetTcpBinding(), "net.tcp://localhost:9876/MyService");
             KeyedByTypeCollection<IEndpointBehavior> behaviors = endpoint.Behaviors;
             host.Open();
@@ -34,7 +35,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
     {
         public virtual void Foo()
         {
-            
+
         }
     }
 }

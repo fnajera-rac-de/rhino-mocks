@@ -28,9 +28,7 @@
 
 
 using System;
-using System.Text;
 using Xunit;
-using Rhino.Mocks.Helpers;
 
 namespace Rhino.Mocks.Tests
 {
@@ -40,7 +38,7 @@ namespace Rhino.Mocks.Tests
         {
             public virtual void MyMethod(out int i, ref string s, int i1, out string s2)
             {
-                throw new NotImplementedException(); 
+                throw new NotImplementedException();
             }
         }
 
@@ -48,6 +46,7 @@ namespace Rhino.Mocks.Tests
         public void UseTheOutMethodToSpecifyOutputAndRefParameters()
         {
             MyClass myClass = MockRepository.Mock<MyClass>();
+            myClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             int i;
             string s = null;
@@ -69,6 +68,7 @@ namespace Rhino.Mocks.Tests
         public void UseTheOutMethodToSpecifyOutputAndRefParameters_CanOnlyBeCalledOnce()
         {
             MyClass myClass = MockRepository.Mock<MyClass>();
+            myClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             int i;
             string s = null;
@@ -84,6 +84,7 @@ namespace Rhino.Mocks.Tests
         public void GivingLessParametersThanWhatIsInTheMethodWillNotThrow()
         {
             MyClass myClass = MockRepository.Mock<MyClass>();
+            myClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             int i;
             string s = null;

@@ -1,27 +1,26 @@
-
-using System;
 using System.Threading;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Naraga
-	{
-		public interface IService
-		{
-			void Do(string msg);
-		}
+    public class FieldProblem_Naraga
+    {
+        public interface IService
+        {
+            void Do(string msg);
+        }
 
-		[Fact]
-		public void MultiThreadedReplay()
-		{
-			var service = MockRepository.Mock<IService>();
-			for (int i = 0; i < 100; i++)
-			{
-				int i1 = i;
+        [Fact]
+        public void MultiThreadedReplay()
+        {
+            var service = MockRepository.Mock<IService>();
+            service.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            for (int i = 0; i < 100; i++)
+            {
+                int i1 = i;
                 service.Expect(x => x.Do("message" + i1));
-			}
-			
+            }
+
             int counter = 0;
             for (int i = 0; i < 100; i++)
             {
@@ -37,6 +36,6 @@ namespace Rhino.Mocks.Tests.FieldsProblem
                 Thread.Sleep(100);
 
             service.VerifyExpectations(true);
-		}
-	}
+        }
+    }
 }

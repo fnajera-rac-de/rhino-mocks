@@ -29,61 +29,60 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using Xunit;
-using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Exceptions;
 using Rhino.Mocks.Helpers;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	// Interface to create mocks for
-	public interface ITestInterface
-	{
-		event EventHandler<EventArgs> AnEvent;
-		void RefOut(string str, out int i, string str2, ref int j, string str3);
-		void VoidList(List<string> list);
-		void VoidObject (object obj);
-	}
+    // Interface to create mocks for
+    public interface ITestInterface
+    {
+        event EventHandler<EventArgs> AnEvent;
+        void RefOut(string str, out int i, string str2, ref int j, string str3);
+        void VoidList(List<string> list);
+        void VoidObject(object obj);
+    }
 
-	public class ArgConstraintTests
-	{
-		private IDemo demoMock;
-		private ITestInterface testMock;
+    public class ArgConstraintTests
+    {
+        private IDemo demoMock;
+        private ITestInterface testMock;
 
-		private delegate string StringDelegateWithParams(int a, string b);
+        private delegate string StringDelegateWithParams(int a, string b);
 
-		public ArgConstraintTests()
-		{
-			demoMock = MockRepository.Mock<IDemo>();
+        public ArgConstraintTests()
+        {
+            demoMock = MockRepository.Mock<IDemo>();
+            demoMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             testMock = MockRepository.Mock<ITestInterface>();
-		}
+            testMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		[Fact]
-		public void ThreeArgs_Pass()
-		{
+        [Fact]
+        public void ThreeArgs_Pass()
+        {
             demoMock.Expect(x =>
                 x.VoidThreeArgs(Arg<int>.Is.Anything, Arg.Text.Contains("eine"), Arg<float>.Is.LessThan(2.5f)));
 
             demoMock.VoidThreeArgs(3, "Steinegger", 2.4f);
             demoMock.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void ThreeArgs_Fail()
-		{
+        [Fact]
+        public void ThreeArgs_Fail()
+        {
             demoMock.Expect(x =>
                 x.VoidThreeArgs(Arg<int>.Is.Anything, Arg.Text.Contains("eine"), Arg<float>.Is.LessThan(2.5f)));
 
             demoMock.VoidThreeArgs(2, "Steinegger", 2.6f);
             Assert.Throws<ExpectationViolationException>(
                 () => demoMock.VerifyExpectations());
-		}
+        }
 
-		[Fact]
-		public void Matches()
-		{
+        [Fact]
+        public void Matches()
+        {
             demoMock.Expect(x =>
                 x.VoidStringArg(Arg<string>.Matches(Is.Equal("hallo") || Text.EndsWith("b"))))
                 .Repeat.Times(3);
@@ -93,20 +92,20 @@ namespace Rhino.Mocks.Tests
             demoMock.VoidStringArg("bb");
 
             demoMock.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void ConstraintsThatWerentCallCauseVerifyFailure()
-		{
+        [Fact]
+        public void ConstraintsThatWerentCallCauseVerifyFailure()
+        {
             demoMock.Expect(x => x.VoidStringArg(Arg.Text.Contains("World")));
 
             Assert.Throws<ExpectationViolationException>(
                 () => demoMock.VerifyExpectations());
-		}
+        }
 
-		[Fact]
-		public void RefAndOutArgs()
-		{
+        [Fact]
+        public void RefAndOutArgs()
+        {
             testMock.Expect(x => x.RefOut(
                 Arg<string>.Is.Anything, out Arg<int>.Out(3).Dummy,
                 Arg<string>.Is.Equal("Steinegger"), ref Arg<int>.Ref(Is.Equal(2), 7).Dummy,
@@ -121,23 +120,25 @@ namespace Rhino.Mocks.Tests
             Assert.Equal(7, iref);
 
             testMock.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void Event()
-		{
+        [Fact]
+        public void Event()
+        {
             ITestInterface eventMock = MockRepository.Mock<ITestInterface>();
+            eventMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             eventMock.Expect(x => x.AnEvent += Arg<EventHandler<EventArgs>>.Is.Anything);
             eventMock.AnEvent += handler;
 
             eventMock.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void ListTest()
-		{
+        [Fact]
+        public void ListTest()
+        {
             ITestInterface testMock = MockRepository.Mock<ITestInterface>();
+            testMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             testMock.Expect(x => x.VoidList(Arg<List<string>>.List.Count(Is.GreaterThan(3))));
             testMock.Expect(x => x.VoidList(Arg<List<string>>.List.IsIn("hello")));
@@ -147,101 +148,103 @@ namespace Rhino.Mocks.Tests
 
             Assert.Throws<ExpectationViolationException>(
                 () => testMock.VerifyExpectations());
-		}
-		
-		[Fact]
-		public void ConstraintWithTooFewArguments_ThrowsException()
-		{
+        }
+
+        [Fact]
+        public void ConstraintWithTooFewArguments_ThrowsException()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => demoMock.Expect(x => x.VoidThreeArgs(
                         Arg<int>.Is.Equal(4), Arg.Text.Contains("World"), 3.14f)));
-		}
+        }
 
         [Fact]
-		public void ConstraintToManyArgs_ThrowsException()
-		{
+        public void ConstraintToManyArgs_ThrowsException()
+        {
             Arg<int>.Is.Equal(4);
             Assert.Throws<InvalidOperationException>(
-                () => demoMock.Expect(x => 
+                () => demoMock.Expect(x =>
                     x.VoidThreeArgs(Arg<int>.Is.Equal(4), Arg.Text.Contains("World"), Arg<float>.Is.Equal(3.14f))));
-		}
+        }
 
-		[Fact]
-		public void MockRepositoryClearsArgData()
-		{
-			Arg<int>.Is.Equal(4);
-			Arg<int>.Is.Equal(4);
+        [Fact]
+        public void MockRepositoryClearsArgData()
+        {
+            Arg<int>.Is.Equal(4);
+            Arg<int>.Is.Equal(4);
 
-			demoMock = MockRepository.Mock<IDemo>();
+            demoMock = MockRepository.Mock<IDemo>();
+            demoMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demoMock.Expect(x => x.VoidThreeArgs(
                 Arg<int>.Is.Equal(4), Arg.Text.Contains("World"), Arg<float>.Is.Equal(3.14f)));
-		}
-		
-		[Fact]
-		public void TooFewOutArgs()
-		{
-			int iout = 2;
+        }
+
+        [Fact]
+        public void TooFewOutArgs()
+        {
+            int iout = 2;
 
             Assert.Throws<InvalidOperationException>(
                 () => testMock.Expect(x => x.RefOut(
                         Arg<string>.Is.Anything, out iout,
                         Arg.Text.Contains("Steinegger"), ref Arg<int>.Ref(Is.Equal(2), 7).Dummy,
                         Arg<string>.Is.NotNull)));
-		}
+        }
 
-		[Fact]
-		public void RefInsteadOfOutArg()
-		{
+        [Fact]
+        public void RefInsteadOfOutArg()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => testMock.Expect(x => x.RefOut(
                         Arg<string>.Is.Anything, out Arg<int>.Ref(Is.Equal(2), 7).Dummy,
                         Arg.Text.Contains("Steinegger"), ref Arg<int>.Ref(Is.Equal(2), 7).Dummy,
                         Arg<string>.Is.NotNull)));
-		}
+        }
 
-		[Fact]
-		public void OutInsteadOfRefArg()
-		{
+        [Fact]
+        public void OutInsteadOfRefArg()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => testMock.Expect(x => x.RefOut(
                         Arg<string>.Is.Anything, out Arg<int>.Out(7).Dummy,
                         Arg.Text.Contains("Steinegger"), ref Arg<int>.Out(7).Dummy,
                         Arg<string>.Is.NotNull)));
-		}
+        }
 
-		[Fact]
-		public void OutInsteadOfInArg()
-		{
+        [Fact]
+        public void OutInsteadOfInArg()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => testMock.Expect(x => x.VoidObject(Arg<object>.Out(null))));
-		}
-		
-		[Fact]
-		public void Is_EqualsThrowsException()
-		{
-			Assert.Throws<InvalidOperationException>(
-				() => Arg<object>.Is.Equals(null));
-		}
+        }
 
-		[Fact]
-		public void List_EqualsThrowsException()
-		{
-			Assert.Throws<InvalidOperationException>(
-				() => Arg<object>.List.Equals(null));
-		}
+        [Fact]
+        public void Is_EqualsThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(
+                () => Arg<object>.Is.Equals(null));
+        }
 
-		[Fact]
-		public void Text_EqualsThrowsException()
-		{
-			Assert.Throws<InvalidOperationException>(
-				() => Arg.Text.Equals(null));
-		}
-		
-		[Fact]
-		public void MockStringDelegateWithParams()
-		{
+        [Fact]
+        public void List_EqualsThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(
+                () => Arg<object>.List.Equals(null));
+        }
+
+        [Fact]
+        public void Text_EqualsThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(
+                () => Arg.Text.Equals(null));
+        }
+
+        [Fact]
+        public void MockStringDelegateWithParams()
+        {
             StringDelegateWithParams d = MockRepository.Mock<StringDelegateWithParams>(null);
+            d.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d.Expect(x => x(Arg<int>.Is.Equal(1), Arg<string>.Is.Equal("111")))
                 .Return("abc");
@@ -249,19 +252,20 @@ namespace Rhino.Mocks.Tests
             d.Expect(x => x(Arg<int>.Is.Equal(2), Arg<string>.Is.Equal("222")))
                 .Return("def");
 
-			Assert.Equal("abc", d(1, "111"));
-			Assert.Equal("def", d(2, "222"));
+            Assert.Equal("abc", d(1, "111"));
+            Assert.Equal("def", d(2, "222"));
 
             d(3, "333");
 
             Assert.Throws<ExpectationViolationException>(() => d.VerifyExpectations(true));
-		}
-		
-		[Fact]
+        }
+
+        [Fact]
         public void Mock_object_using_ExpectMethod_with_ArgConstraints_allow_for_multiple_calls_as_default_behavior()
         {
             // Arrange
             var mock = MockRepository.Mock<IDemo>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.StringArgString(Arg<string>.Is.Equal("input")))
                 .Return("output");
 
@@ -279,6 +283,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var mock = MockRepository.Mock<IDemo>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.StringArgString(Arg<string>.Is.Equal("input")))
                 .Return("output");
 
@@ -296,6 +301,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<IDemo>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.StringArgString(Arg<string>.Is.Equal("input")))
                 .Return("output");
 
@@ -313,6 +319,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var mock = MockRepository.Mock<IDemo>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Stub(x => x.StringArgString(Arg<string>.Is.Equal("input")))
                 .Return("output");
 
@@ -330,6 +337,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.Equal(1))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             // Assert
@@ -342,6 +350,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.NotEqual(1))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             var actual = stub.GetUser(0);
@@ -356,6 +365,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.GreaterThan(1))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             // Assert
@@ -369,6 +379,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.GreaterThanOrEqual(2))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             // Assert
@@ -382,6 +393,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.LessThan(2))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             // Assert
@@ -395,6 +407,7 @@ namespace Rhino.Mocks.Tests
         {
             // Arrange
             var stub = MockRepository.Mock<ITestService>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stub.Stub(x => x.GetUser(Arg<long>.Is.LessThanOrEqual(2))).Return("test"); // 1 is inferred as Int32 (not Int64)
 
             // Assert
@@ -412,5 +425,5 @@ namespace Rhino.Mocks.Tests
         {
 
         }
-	}
+    }
 }

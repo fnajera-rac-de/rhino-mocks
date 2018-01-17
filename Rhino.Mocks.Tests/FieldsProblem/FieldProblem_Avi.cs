@@ -28,7 +28,6 @@
 
 
 using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -61,26 +60,30 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         }
     }
 
-    
+
     public class RhinoDynamicMockOfGeneric
     {
         [Fact]
         public void createDynamicMockOfGeneric()
         {
             genericClass<int> mockA = MockRepository.Mock<genericClass<int>>();
+            mockA.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
         public void TestMockOnGenericWithDifferentTypes()
         {
             IComparable<int> mock1 = MockRepository.Mock<IComparable<int>>();
+            mock1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             IComparable<bool> mock2 = MockRepository.Mock<IComparable<bool>>();
+            mock2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
         public void createDynamicMockOfGenericAgain()
         {
             genericClass<int> mockA = MockRepository.Mock<genericClass<int>>();
+            mockA.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         public class genericClass<T>

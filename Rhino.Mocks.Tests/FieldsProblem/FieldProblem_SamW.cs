@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -13,6 +10,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             string b;
 
             ITest test = MockRepository.Mock<ITest>();
+            test.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             test.Expect(x => x.ArrayWithOut(Arg<string[]>.List.IsIn("data"), out Arg<string>.Out("SuccessWithOut2").Dummy))
                 .Return("SuccessWithOut1");
 

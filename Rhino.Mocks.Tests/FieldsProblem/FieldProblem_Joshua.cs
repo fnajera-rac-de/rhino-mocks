@@ -1,5 +1,4 @@
 using Xunit;
-using Rhino.Mocks.Constraints;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -11,6 +10,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             const int theNumberToReturnFromTheServiceOutParameter = 20;
 
             ServiceBeingCalled service = MockRepository.Mock<ServiceBeingCalled>();
+            service.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             // Uncommenting the following line will make the test pass, because the expectation constraints will match up with the actual call.
             // However, the value of an out parameter cannot be used within a method value before it is set within the method value,

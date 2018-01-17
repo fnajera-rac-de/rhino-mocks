@@ -29,82 +29,85 @@
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using Rhino.Mocks.Constraints;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_KevinM
-	{
-		[Fact]
-		public void VerifyListPropertyIsSetToList_WithAssert()
-		{
-			var sHolder =
-				MockRepository.Mock<IPropertyHolder>();
-			var sManager =
-				MockRepository.Mock<IPropertyManager>();
+    public class FieldProblem_KevinM
+    {
+        [Fact]
+        public void VerifyListPropertyIsSetToList_WithAssert()
+        {
+            var sHolder =
+                MockRepository.Mock<IPropertyHolder>();
+            sHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            var sManager =
+                MockRepository.Mock<IPropertyManager>();
+            sManager.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			var mList = new List<string> {"Foo", "Bar", "Baz"};
+            var mList = new List<string> { "Foo", "Bar", "Baz" };
 
-			// Set up return on stub
-			sManager.Stub(x =>
-			              x.GetProperty()).Return(mList.AsQueryable());
+            // Set up return on stub
+            sManager.Stub(x =>
+                          x.GetProperty()).Return(mList.AsQueryable());
 
-			new
-				PropertyCoordinator(sHolder, sManager).SetListProperty();
+            new
+                PropertyCoordinator(sHolder, sManager).SetListProperty();
 
-			Assert.Equal(sHolder.MyList.ToArray(), mList.ToArray());
-		}
+            Assert.Equal(sHolder.MyList.ToArray(), mList.ToArray());
+        }
 
-		[Fact]
-		public void
-			VerifyListPropertyIsSetToList_WithAssertWasCalled()
-		{
-			var sHolder =
-				MockRepository.Mock<IPropertyHolder>();
-			var sManager =
-				MockRepository.Mock<IPropertyManager>();
+        [Fact]
+        public void
+            VerifyListPropertyIsSetToList_WithAssertWasCalled()
+        {
+            var sHolder =
+                MockRepository.Mock<IPropertyHolder>();
+            sHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            var sManager =
+                MockRepository.Mock<IPropertyManager>();
+            sManager.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			// Stub list
-			var mList = new List<string> {"Foo", "Bar", "Baz"};
+            // Stub list
+            var mList = new List<string> { "Foo", "Bar", "Baz" };
 
-			// Set up return on stub
-			sManager.Stub(x =>
-						  x.GetProperty()).Return(mList.AsQueryable());
+            // Set up return on stub
+            sManager.Stub(x =>
+                          x.GetProperty()).Return(mList.AsQueryable());
 
-			new PropertyCoordinator(sHolder,
-			                        sManager).SetListProperty();
+            new PropertyCoordinator(sHolder,
+                                    sManager).SetListProperty();
 
             sHolder.AssertWasCalled(
                 h => h.MyList = Arg<IList<string>>.List.Equal(mList));
-		}
-	}
+        }
+    }
 
-	public interface IPropertyHolder
-	{
-		IList<string> MyList { get; set; }
-	}
+    public interface IPropertyHolder
+    {
+        IList<string> MyList { get; set; }
+    }
 
 
-	public interface IPropertyManager
-	{
-		IQueryable<string> GetProperty();
-	}
+    public interface IPropertyManager
+    {
+        IQueryable<string> GetProperty();
+    }
 
-	public class PropertyCoordinator
-	{
-		private readonly IPropertyHolder _holder;
-		private readonly IPropertyManager _manager;
+    public class PropertyCoordinator
+    {
+        private readonly IPropertyHolder _holder;
+        private readonly IPropertyManager _manager;
 
-		public PropertyCoordinator(IPropertyHolder holder,
-		                           IPropertyManager manager)
-		{
-			_holder = holder;
-			_manager = manager;
-		}
+        public PropertyCoordinator(IPropertyHolder holder,
+                                   IPropertyManager manager)
+        {
+            _holder = holder;
+            _manager = manager;
+        }
 
-		public void SetListProperty()
-		{
-			_holder.MyList = _manager.GetProperty().ToList();
-		}
-	}
+        public void SetListProperty()
+        {
+            _holder.MyList = _manager.GetProperty().ToList();
+        }
+    }
 }

@@ -1,17 +1,17 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-    
+
     public class FieldProblem_TrueWill
     {
         [Fact]
         public void ReadWritePropertyBug1()
         {
             ISomeThing thing = MockRepository.Mock<ISomeThing>();
+            thing.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             thing.Number = 21;
 
             thing.Stub(x => x.Name)
@@ -26,8 +26,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void ReadWritePropertyBug2()
         {
             ISomeThing thing = MockRepository.Mock<ISomeThing>();
-        	Assert.Throws<InvalidOperationException>(
-        		() => thing.Stub(x => x.Number).Return(21));
+            thing.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.Throws<InvalidOperationException>(
+                () => thing.Stub(x => x.Number).Return(21));
             // InvalidOperationException :
             // Invalid call, the last call has been used...
             // This broke a test on a real project when a

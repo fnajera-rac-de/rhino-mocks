@@ -32,13 +32,14 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_75_MockingExpcetion
-	{
-		[Fact]
-		public void MockingException()
-		{
-			InvalidOperationException mock = MockRepository.Mock<InvalidOperationException>();
-			Assert.NotNull(mock);
-		}
-	}
+    public class FieldProblem_75_MockingExpcetion
+    {
+        [Fact]
+        public void MockingException()
+        {
+            InvalidOperationException mock = MockRepository.Mock<InvalidOperationException>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.NotNull(mock);
+        }
+    }
 }

@@ -1,6 +1,4 @@
-using System;
 using Xunit;
-using Rhino.Mocks.Constraints;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -10,6 +8,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void StubNeverFailsTheTest()
         {
             IGetResults resultGetter = MockRepository.Mock<IGetResults>();
+            resultGetter.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             resultGetter.Stub(x => x.GetSomeNumber("a"))
                 .Return(1);
@@ -24,6 +23,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void CanGetSetupResultFromStub()
         {
             IGetResults resultGetter = MockRepository.Mock<IGetResults>();
+            resultGetter.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             resultGetter.Stub(x => x.GetSomeNumber("a"))
                 .Return(1);

@@ -27,63 +27,66 @@
 #endregion
 
 
-using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
     public class GenericMethods
-	{
-		[Fact]
-		public void CanStrictMockOfInterfaceWithGenericMethod()
-		{
+    {
+        [Fact]
+        public void CanStrictMockOfInterfaceWithGenericMethod()
+        {
             IFactory factory = MockRepository.Mock<IFactory>();
-		}
+            factory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		[Fact]
-		public void CanSetExpectationsOnInterfaceWithGenericMethod()
-		{
+        [Fact]
+        public void CanSetExpectationsOnInterfaceWithGenericMethod()
+        {
             IFactory factory = MockRepository.Mock<IFactory>();
+            factory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             factory.Expect(x => x.Create<string>())
                 .Return("working?");
 
-			string result = factory.Create<string>();
+            string result = factory.Create<string>();
 
             Assert.Equal("working?", result);
             factory.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void WillGetErrorIfCallingMethodWithDifferentGenericArgument()
-		{
+        [Fact]
+        public void WillGetErrorIfCallingMethodWithDifferentGenericArgument()
+        {
             IFactory factory = MockRepository.Mock<IFactory>();
+            factory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             factory.Expect(x => x.Create<string>())
                 .Return("working?");
 
             factory.Create<int>();
 
-			Assert.Throws<ExpectationViolationException>(
-				() => factory.VerifyExpectations(true));
-		}
+            Assert.Throws<ExpectationViolationException>(
+                () => factory.VerifyExpectations(true));
+        }
 
-		[Fact]
-		public void WillGiveErrorIfMissingCallToGenericMethod()
-		{
+        [Fact]
+        public void WillGiveErrorIfMissingCallToGenericMethod()
+        {
             IFactory factory = MockRepository.Mock<IFactory>();
+            factory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             factory.Expect(x => x.Create<string>())
                 .Return("working?");
 
-			Assert.Throws<ExpectationViolationException>(
-				() => factory.VerifyAllExpectations());
-		}
-	}
-    
-	public interface IFactory
-	{
-		T Create<T>();
-	}
+            Assert.Throws<ExpectationViolationException>(
+                () => factory.VerifyAllExpectations());
+        }
+    }
+
+    public interface IFactory
+    {
+        T Create<T>();
+    }
 }

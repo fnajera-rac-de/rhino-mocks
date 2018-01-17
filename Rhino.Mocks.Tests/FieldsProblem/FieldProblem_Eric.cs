@@ -28,39 +28,40 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Constraints;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class ClassWithFinalizer
-	{
-		~ClassWithFinalizer()
-		{
-			Console.WriteLine(5);
-		}
-	}
-    
-	public class FieldProblem_Eric
-	{
-		[Fact]
-		public void MockAClassWithFinalizer()
-		{
-			ClassWithFinalizer withFinalizer = MockRepository.Mock<ClassWithFinalizer>();
+    public class ClassWithFinalizer
+    {
+        ~ClassWithFinalizer()
+        {
+            Console.WriteLine(5);
+        }
+    }
+
+    public class FieldProblem_Eric
+    {
+        [Fact]
+        public void MockAClassWithFinalizer()
+        {
+            ClassWithFinalizer withFinalizer = MockRepository.Mock<ClassWithFinalizer>();
+            withFinalizer.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             withFinalizer.VerifyExpectations(true);
-			withFinalizer = null; // abandon the variable, will make it avialable for GC.
+            withFinalizer = null; // abandon the variable, will make it avialable for GC.
 
-			GC.WaitForPendingFinalizers();
-		}
+            GC.WaitForPendingFinalizers();
+        }
 
-		public class Class1Test
-		{
-			[Fact]
-			public void ThisWorks()
-			{
+        public class Class1Test
+        {
+            [Fact]
+            public void ThisWorks()
+            {
                 IFoo mockFoo = MockRepository.Mock<IFoo>();
+                mockFoo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-				int junk = 3;
+                int junk = 3;
                 mockFoo.Expect(x => x.foo(ref Arg<int>.Ref(junk).Dummy))
                     .IgnoreArguments()
                     .Repeat.Once()
@@ -68,14 +69,15 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
                 ClassUnderTest cut = new ClassUnderTest();
                 Assert.Equal(3, cut.doit(mockFoo));
-			}
+            }
 
-			[Fact]
-			public void ThisDoesnt()
-			{
-				IFoo mockFoo = MockRepository.Mock<IFoo>();
+            [Fact]
+            public void ThisDoesnt()
+            {
+                IFoo mockFoo = MockRepository.Mock<IFoo>();
+                mockFoo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-				int junk = 3;
+                int junk = 3;
                 mockFoo.Expect(x => x.foo(ref Arg<int>.Ref(junk).Dummy))
                     .IgnoreArguments()
                     .Repeat.Once()
@@ -83,24 +85,24 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
                 ClassUnderTest cut = new ClassUnderTest();
                 Assert.Equal(3, cut.doit(mockFoo));
-			}
-		}
+            }
+        }
 
-		public class ClassUnderTest
-		{
-			public int doit(IFoo fooer)
-			{
-				int results = 0;
-				if (fooer.foo(ref results))
-					return results;
-				else
-					return -1;
-			}
-		}
+        public class ClassUnderTest
+        {
+            public int doit(IFoo fooer)
+            {
+                int results = 0;
+                if (fooer.foo(ref results))
+                    return results;
+                else
+                    return -1;
+            }
+        }
 
-		public interface IFoo
-		{
-			bool foo(ref int fooSquared);
-		}
-	}
+        public interface IFoo
+        {
+            bool foo(ref int fooSquared);
+        }
+    }
 }

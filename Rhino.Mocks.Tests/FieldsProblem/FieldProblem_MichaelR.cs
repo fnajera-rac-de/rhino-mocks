@@ -27,88 +27,88 @@
 #endregion
 
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class PropertyWithTypeParameterTest
-	{
-		[Fact]
-		public void CreatedClosedGenericType()
-		{
+    public class PropertyWithTypeParameterTest
+    {
+        [Fact]
+        public void CreatedClosedGenericType()
+        {
             MockRepository.Mock<ClosedGenericType>();
-		}
-        
-		[Fact]
-		public void UsingdoOnMethodWithGenericReturnValue()
-		{
+        }
+
+        [Fact]
+        public void UsingdoOnMethodWithGenericReturnValue()
+        {
             IGenericType<object> mock = MockRepository.Mock<IGenericType<object>>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.MyMethod())
-                .DoInstead((MyDelegate)delegate { return new object(); });
-		}
+                .DoInstead((MyDelegate) delegate { return new object(); });
+        }
 
-		/// <summary>
-		/// If this fails with Execution Engine Exception, you need to install the hotfix 
-		/// for KB 957542.
-		/// There is a bug in .Net 3.5 SP1 that this test exposes.
-		/// </summary>
-		[Fact]
-		public void DoubleGeneric()
-		{
-			string clrInstallationDir = Path.GetDirectoryName(typeof(object).Assembly.Location);
-			string mscorwksFilename = Path.Combine(clrInstallationDir, "mscorwks.dll");
-			FileVersionInfo clrVersion = FileVersionInfo.GetVersionInfo(mscorwksFilename);
+        /// <summary>
+        /// If this fails with Execution Engine Exception, you need to install the hotfix 
+        /// for KB 957542.
+        /// There is a bug in .Net 3.5 SP1 that this test exposes.
+        /// </summary>
+        [Fact]
+        public void DoubleGeneric()
+        {
+            string clrInstallationDir = Path.GetDirectoryName(typeof(object).Assembly.Location);
+            string mscorwksFilename = Path.Combine(clrInstallationDir, "mscorwks.dll");
+            FileVersionInfo clrVersion = FileVersionInfo.GetVersionInfo(mscorwksFilename);
 
-			if( clrVersion.ProductMajorPart == 2 && 
-				clrVersion.ProductMinorPart == 0 &&
-				clrVersion.ProductBuildPart == 50727)
-			{
-				// CLR 2.0, now need to check if we have the .NET 3.5 with SP1 installed,
-				// without the hotfix
-				if (clrVersion.ProductPrivatePart >= 3053 &&
-					clrVersion.ProductPrivatePart < 3068)
-				{
-					//"You are running on .NET 3.5 SP1, without the KB 957542 hotfix. This version of the CLR has a bug that cause this test to fail");
-					return;
-				}
-			}
+            if (clrVersion.ProductMajorPart == 2 &&
+                clrVersion.ProductMinorPart == 0 &&
+                clrVersion.ProductBuildPart == 50727)
+            {
+                // CLR 2.0, now need to check if we have the .NET 3.5 with SP1 installed,
+                // without the hotfix
+                if (clrVersion.ProductPrivatePart >= 3053 &&
+                    clrVersion.ProductPrivatePart < 3068)
+                {
+                    //"You are running on .NET 3.5 SP1, without the KB 957542 hotfix. This version of the CLR has a bug that cause this test to fail");
+                    return;
+                }
+            }
 
             IDoubleGeneric<int> mock = MockRepository.Mock<IDoubleGeneric<int>>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.Method<string>(1, ""));
-		}
-	}
+        }
+    }
 
-	public interface IDoubleGeneric<One>
-	{
-		object Method<T>(One one, T two);
-	}
+    public interface IDoubleGeneric<One>
+    {
+        object Method<T>(One one, T two);
+    }
 
-	public interface IGenericType<T>
-	{
-		T MyMethod();
-	}
+    public interface IGenericType<T>
+    {
+        T MyMethod();
+    }
 
-	public delegate object MyDelegate();
+    public delegate object MyDelegate();
 
-	public class ClosedGenericType : OpenGenericType<TypeParameterType>
-	{
-		public override TypeParameterType GenericProperty
-		{
-			get { return null; }
-		}
-	}
+    public class ClosedGenericType : OpenGenericType<TypeParameterType>
+    {
+        public override TypeParameterType GenericProperty
+        {
+            get { return null; }
+        }
+    }
 
-	public abstract class OpenGenericType<T>
-	{
-		public abstract T GenericProperty { get; }
-	}
+    public abstract class OpenGenericType<T>
+    {
+        public abstract T GenericProperty { get; }
+    }
 
-	public class TypeParameterType
-	{
-	}
+    public class TypeParameterType
+    {
+    }
 }

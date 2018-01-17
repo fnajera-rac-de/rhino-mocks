@@ -27,8 +27,6 @@
 #endregion
 
 
-using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -42,16 +40,17 @@ namespace Rhino.Mocks.Tests.FieldsProblem
                 return base.Equals(obj);
             }
 
-        	public override int GetHashCode()
-        	{
-        		return base.GetHashCode();
-        	}
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
         }
 
         [Fact]
         public void MockClassWithEquals()
         {
             ClassThatOverrideEquals c = MockRepository.Mock<ClassThatOverrideEquals>();
+            c.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             c.Expect(x => x.Equals(c))
                 .Return(false);

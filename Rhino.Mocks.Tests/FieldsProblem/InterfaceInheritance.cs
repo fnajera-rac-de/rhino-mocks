@@ -39,6 +39,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void CreateObjectUsingInterfaceInheritance()
         {
             ILocalizer localizer = MockRepository.Mock<ILocalizer>();
+            localizer.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(localizer);
 
             typeof(ILocalizer).IsAssignableFrom(localizer.GetType());

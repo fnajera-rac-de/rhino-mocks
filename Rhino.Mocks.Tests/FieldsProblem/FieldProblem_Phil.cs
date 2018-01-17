@@ -28,52 +28,51 @@
 
 
 using System;
-using System.Text;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public interface IWithEvent
-	{
-		event EventHandler Load;
-	}
+    public interface IWithEvent
+    {
+        event EventHandler Load;
+    }
 
-	public class EventConsumer
-	{
-		public bool OnLoadCalled = false;
+    public class EventConsumer
+    {
+        public bool OnLoadCalled = false;
 
-		IWithEvent _withEvent;
-		public EventConsumer(IWithEvent withEvent)
-		{
-			_withEvent = withEvent;
-			_withEvent.Load += new EventHandler(OnLoad);
-		}
+        IWithEvent _withEvent;
+        public EventConsumer(IWithEvent withEvent)
+        {
+            _withEvent = withEvent;
+            _withEvent.Load += new EventHandler(OnLoad);
+        }
 
-		void OnLoad(object sender, EventArgs e)
-		{
-			OnLoadCalled = true;
+        void OnLoad(object sender, EventArgs e)
+        {
+            OnLoadCalled = true;
 
-		}
-	}
-    
-	public class FieldProblem_Phil
-	{
+        }
+    }
+
+    public class FieldProblem_Phil
+    {
         [Fact]
-		public void VerifyingThatEventWasAttached()
-		{
+        public void VerifyingThatEventWasAttached()
+        {
             IWithEvent events = MockRepository.Mock<IWithEvent>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Load += null)
                 .IgnoreArguments();
-			
-			EventConsumer consumerMock = new EventConsumer(events);
-			
+
+            EventConsumer consumerMock = new EventConsumer(events);
+
             //Next line invokes Load event.
             events.Raise(x => x.Load += null, EventArgs.Empty);
-			
-			Assert.True(consumerMock.OnLoadCalled);
+
+            Assert.True(consumerMock.OnLoadCalled);
             events.VerifyAllExpectations();
-		}
-	}
+        }
+    }
 }

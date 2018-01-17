@@ -29,40 +29,41 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Xunit;
-using Rhino.Mocks.Constraints;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.Callbacks
 {
-	public class CallbackTests
-	{
-		private IDemo demo;
-		private bool callbackCalled;
+    public class CallbackTests
+    {
+        private IDemo demo;
+        private bool callbackCalled;
 
-		public CallbackTests()
-		{
-			System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+        public CallbackTests()
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
             demo = MockRepository.Mock<IDemo>();
-			callbackCalled = false;
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-		[Fact]
-		public void CallbackIsCalled()
-		{
+            callbackCalled = false;
+        }
+
+        [Fact]
+        public void CallbackIsCalled()
+        {
             demo.Expect(x => x.VoidStringArg("Ayende"))
                 .IgnoreArguments()
                 .WhenCalled<string>(x => StringMethod(x));
 
-			demo.VoidStringArg("");
+            demo.VoidStringArg("");
             demo.VerifyExpectations(true);
-			Assert.True(callbackCalled);
-		}
+            Assert.True(callbackCalled);
+        }
 
-		[Fact]
-		public void GetSameArgumentsAsMethod()
-		{
+        [Fact]
+        public void GetSameArgumentsAsMethod()
+        {
             demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                 .IgnoreArguments()
                 .WhenCalled<int, string, float>((x, y, z) => ThreeArgsAreSame(x, y, z));
@@ -70,59 +71,59 @@ namespace Rhino.Mocks.Tests.Callbacks
             demo.VoidThreeArgs(1, "Ayende", 3.14f);
             demo.VerifyExpectations(true);
             Assert.True(callbackCalled);
-		}
+        }
 
-		[Fact]
-		public void DifferentArgumentsFromMethodThrows()
-		{
+        [Fact]
+        public void DifferentArgumentsFromMethodThrows()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                         .WhenCalled<int, string, string>((x, y, z) => OtherThreeArgs(x, y, z)));
-		}
+        }
 
-		[Fact]
-		public void IgnoreArgsWhenUsingCallbacks()
-		{
+        [Fact]
+        public void IgnoreArgsWhenUsingCallbacks()
+        {
             demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                 .IgnoreArguments()
                 .WhenCalled<int, string, float>((x, y, z) => ThreeArgsAreSame(x, y, z));
 
             demo.VoidThreeArgs(1, "Ayende", 3.14f);
             demo.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void SetReturnValueOnMethodWithCallback()
-		{
+        [Fact]
+        public void SetReturnValueOnMethodWithCallback()
+        {
             demo.Expect(x => x.ReturnIntNoArgs())
                 .WhenCalled(() => NoArgsMethod())
                 .Return(5);
 
             Assert.Equal(5, demo.ReturnIntNoArgs());
             demo.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void CallbackWithDifferentSignatureFails()
-		{
+        [Fact]
+        public void CallbackWithDifferentSignatureFails()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                         .WhenCalled<string>(x => StringMethod(x)));
-		}
+        }
 
-		[Fact]
-		public void GetMessageFromCallbackWhenNotReplaying()
-		{
+        [Fact]
+        public void GetMessageFromCallbackWhenNotReplaying()
+        {
             demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                 .WhenCalled<int, string, float>((x, y, z) => ThreeArgsAreSame(x, y, z));
 
             Assert.Throws<ExpectationViolationException>(
                 () => demo.VerifyExpectations(true));
-		}
+        }
 
-		[Fact]
-		public void GetMessageFromCallbackWhenCalledTooMuch()
-		{
+        [Fact]
+        public void GetMessageFromCallbackWhenCalledTooMuch()
+        {
             demo.Expect(x => x.VoidThreeArgs(0, "", 0f))
                 .WhenCalled<int, string, float>((x, y, z) => ThreeArgsAreSame(x, y, z))
                 .Repeat.Once();
@@ -132,97 +133,97 @@ namespace Rhino.Mocks.Tests.Callbacks
 
             Assert.Throws<ExpectationViolationException>(
                 () => demo.VerifyExpectations(true));
-		}
-        
-		[Fact(Skip = "Test No Longer Valid")]
-		public void CallbackWhenMethodHasReturnValue()
-		{
+        }
+
+        [Fact(Skip = "Test No Longer Valid")]
+        public void CallbackWhenMethodHasReturnValue()
+        {
             demo.Expect(x => x.ReturnIntNoArgs())
                 .WhenCalled(() => NoArgsMethod());
 
             Assert.Throws<InvalidOperationException>(
                 () => demo.ReturnIntNoArgs());
-		}
-        
-		[Fact(Skip = "Test No Longer Valid (Constraint Removed)")]
-		public void CallbackAndConstraintsOnSameMethod()
-		{
+        }
+
+        [Fact(Skip = "Test No Longer Valid (Constraint Removed)")]
+        public void CallbackAndConstraintsOnSameMethod()
+        {
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.StringArgString(Arg<string>.Is.Anything))
                     .WhenCalled<string>(x => StringMethod(x)));
-		}
+        }
 
-		[Fact]
-		public void ExceptionInCallback()
-		{
+        [Fact]
+        public void ExceptionInCallback()
+        {
             demo.Expect(x => x.ReturnIntNoArgs())
                 .WhenCalled(() => NoArgsThrowing())
                 .Return(5);
 
-			Assert.Throws<ExternalException>(
+            Assert.Throws<ExternalException>(
                 () => Assert.Equal(5, demo.ReturnIntNoArgs()));
-		}
+        }
 
-		[Fact]
-		public void CallbackCanFailExpectationByReturningFalse()
-		{
+        [Fact]
+        public void CallbackCanFailExpectationByReturningFalse()
+        {
             demo.Expect(x => x.VoidNoArgs())
                 .WhenCalled(() => NoArgsMethodFalse());
 
             demo.VoidThreeArgs(1, "Ayende", 3.14f);
 
-			Assert.Throws<ExpectationViolationException>(
+            Assert.Throws<ExpectationViolationException>(
                 () => demo.VerifyExpectations(true));
-		}
+        }
 
-		private bool StringMethod(string s)
-		{
-			callbackCalled = true;
-			return true;
-		}
+        private bool StringMethod(string s)
+        {
+            callbackCalled = true;
+            return true;
+        }
 
-		private bool OtherThreeArgs(int i, string s, string s2)
-		{
-			return true;
-		}
+        private bool OtherThreeArgs(int i, string s, string s2)
+        {
+            return true;
+        }
 
-		private bool ThreeArgsAreSame(int i, string s, float f)
-		{
-			Assert.Equal(1, i);
-			Assert.Equal("Ayende", s);
-			Assert.Equal(3.14f, f);
+        private bool ThreeArgsAreSame(int i, string s, float f)
+        {
+            Assert.Equal(1, i);
+            Assert.Equal("Ayende", s);
+            Assert.Equal(3.14f, f);
 
-			callbackCalled = true;
-			return true;
-		}
+            callbackCalled = true;
+            return true;
+        }
 
-		private bool NoArgsMethod()
-		{
-			return true;
-		}
+        private bool NoArgsMethod()
+        {
+            return true;
+        }
 
-		private bool NoArgsMethodFalse()
-		{
-			return false;
-		}
+        private bool NoArgsMethodFalse()
+        {
+            return false;
+        }
 
-		private bool NoArgsThrowing()
-		{
-			throw new ExternalException("I'm not guilty, is was /him/");
-		}
-	}
+        private bool NoArgsThrowing()
+        {
+            throw new ExternalException("I'm not guilty, is was /him/");
+        }
+    }
 
-	public class DelegateDefinations
-	{
-		public delegate void VoidThreeArgsDelegate(int i, string s, float f);
+    public class DelegateDefinations
+    {
+        public delegate void VoidThreeArgsDelegate(int i, string s, float f);
 
-		public delegate bool StringDelegate(string s);
+        public delegate bool StringDelegate(string s);
 
-		public delegate bool ThreeArgsDelegate(int i, string s, float f);
-		public delegate bool OtherThreeArgsDelegate(int i, string s, string s2);
+        public delegate bool ThreeArgsDelegate(int i, string s, float f);
+        public delegate bool OtherThreeArgsDelegate(int i, string s, string s2);
 
-		public delegate bool NoArgsDelegate();
-		public delegate bool IntArgDelegate(int i);
+        public delegate bool NoArgsDelegate();
+        public delegate bool IntArgDelegate(int i);
 
-	}
+    }
 }

@@ -29,60 +29,63 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Aharon
-	{
-		[Fact]
-		public void CanCreateInterfaceWithGuid()
-		{
-			IUniqueID bridgeRemote = MockRepository.Mock<IUniqueID>();
-			Assert.NotNull(bridgeRemote);
-		}
+    public class FieldProblem_Aharon
+    {
+        [Fact]
+        public void CanCreateInterfaceWithGuid()
+        {
+            IUniqueID bridgeRemote = MockRepository.Mock<IUniqueID>();
+            bridgeRemote.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.NotNull(bridgeRemote);
+        }
 
 
-		[Fact]
-		public void MockingDataset()
-		{
-			MyDataSet controller = MockRepository.Mock<MyDataSet>();
-			Assert.NotNull(controller);
-		}
+        [Fact]
+        public void MockingDataset()
+        {
+            MyDataSet controller = MockRepository.Mock<MyDataSet>();
+            controller.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.NotNull(controller);
+        }
 
-		[Fact]
-		public void PassingMockToMock_WhenErrorOccurs()
-		{
-			Accepter accepter = MockRepository.Mock<Accepter>();
+        [Fact]
+        public void PassingMockToMock_WhenErrorOccurs()
+        {
+            Accepter accepter = MockRepository.Mock<Accepter>();
+            accepter.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             accepter.Accept(accepter);
             Assert.Throws<ExpectationViolationException>(
                 () => accepter.VerifyExpectations(true));
-		}
-	}
+        }
+    }
 
-	public abstract class Accepter
-	{
-		public abstract void Accept(Accepter demo);
+    public abstract class Accepter
+    {
+        public abstract void Accept(Accepter demo);
 
-		public override string ToString()
-		{
-			return base.ToString();
-		}
-	}
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
 
-	[Guid("AFCF8240-61AF-4089-BD98-3CD4D719EDBA")]
-	public interface IUniqueID
-	{
-	}
-    
-	public class MyDataSet : System.Data.DataSet, IClearable
-	{	
-	}
+    [Guid("AFCF8240-61AF-4089-BD98-3CD4D719EDBA")]
+    public interface IUniqueID
+    {
+    }
 
-	public interface IClearable
-	{
-		void Clear();
-	}
+    public class MyDataSet : System.Data.DataSet, IClearable
+    {
+    }
+
+    public interface IClearable
+    {
+        void Clear();
+    }
 }

@@ -69,7 +69,7 @@ namespace Rhino.Mocks.Tests
     public abstract class ProcessorBase
     {
         public int Register;
-        
+
         public virtual int Inc()
         {
             Register = Add(1);
@@ -78,7 +78,7 @@ namespace Rhino.Mocks.Tests
 
         public abstract int Add(int i);
     }
-    
+
     public class IntegrationTests
     {
         public delegate bool CageDelegate(Cage cage);
@@ -89,6 +89,7 @@ namespace Rhino.Mocks.Tests
         public void UsingPartialMocks()
         {
             ProcessorBase proc = MockRepository.Partial<ProcessorBase>();
+            proc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             proc.Expect(x => x.Add(1))
                 .Return(1);
@@ -104,7 +105,7 @@ namespace Rhino.Mocks.Tests
 
             proc.VerifyAllExpectations();
         }
-        
+
         //[Fact]
         //public void ExampleUsingCallbacks()
         //{
@@ -134,6 +135,7 @@ namespace Rhino.Mocks.Tests
         public void ExampleUsingParameterMatchingAndConstraints()
         {
             ISongBird bird = MockRepository.Mock<ISongBird>();
+            bird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             bird.Expect(x => x.Eat("seeds", 500));
 
@@ -155,7 +157,7 @@ namespace Rhino.Mocks.Tests
             {
                 Assert.Equal("No food, no song", e.Message);
             }
-            
+
             bird.VerifyAllExpectations();
         }
 
@@ -163,7 +165,9 @@ namespace Rhino.Mocks.Tests
         public void UnorderedExecutionOfOrderedSequence()
         {
             ISongBird maleBird = MockRepository.Mock<ISongBird>();
+            maleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             ISongBird femaleBird = MockRepository.Mock<ISongBird>();
+            femaleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             maleBird.Expect(x => x.Eat("seeds", 250));
             femaleBird.Expect(x => x.Eat("seeds", 250));
@@ -185,7 +189,9 @@ namespace Rhino.Mocks.Tests
         public void OrderedExecutionOfUnorderedSequence()
         {
             ISongBird maleBird = MockRepository.Mock<ISongBird>();
+            maleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             ISongBird femaleBird = MockRepository.Mock<ISongBird>();
+            femaleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             maleBird.Expect(x => x.Eat("seeds", 250));
             femaleBird.Expect(x => x.Eat("seeds", 250));
@@ -207,7 +213,9 @@ namespace Rhino.Mocks.Tests
         public void SetupResultWithNestedOrdering()
         {
             ISongBird maleBird = MockRepository.Mock<ISongBird>();
+            maleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             ISongBird femaleBird = MockRepository.Mock<ISongBird>();
+            femaleBird.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             maleBird.Stub(x => x.Sing())
                 .Return("");

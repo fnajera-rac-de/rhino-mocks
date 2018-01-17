@@ -28,116 +28,118 @@
 
 
 using System;
-using System.Diagnostics;
-using System.IO;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests
 {
-	
-	public class MockingClassesTests
-	{
-		private DemoClass demoClass;
 
-		public MockingClassesTests()
-		{
-			demoClass = MockRepository.Partial<DemoClass>();
-		}
+    public class MockingClassesTests
+    {
+        private DemoClass demoClass;
 
-		[Fact]
-		public void MockVirtualCall()
-		{
+        public MockingClassesTests()
+        {
+            demoClass = MockRepository.Partial<DemoClass>();
+            demoClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
+
+        [Fact]
+        public void MockVirtualCall()
+        {
             demoClass.Expect(x => x.Two())
                 .Return(3);
 
             Assert.Equal(3, demoClass.Two());
 
             demoClass.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void MockClassWithParametrizedCtor()
-		{
-			ParametrizedCtor pc = MockRepository.Partial<ParametrizedCtor>(3, "Hello");
-			Assert.Equal(3, pc.Int);
-			Assert.Equal("Hello", pc.String);
+        [Fact]
+        public void MockClassWithParametrizedCtor()
+        {
+            ParametrizedCtor pc = MockRepository.Partial<ParametrizedCtor>(3, "Hello");
+            pc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.Equal(3, pc.Int);
+            Assert.Equal("Hello", pc.String);
 
             pc.Expect(x => x.Add(0, 1))
                 .Return(10);
 
-			Assert.Equal(10, pc.Add(0, 1));
+            Assert.Equal(10, pc.Add(0, 1));
             pc.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void MockClassWithOverloadedCtor()
-		{
-			OverLoadedCtor oc = MockRepository.Partial<OverLoadedCtor>(1);
-			OverLoadCtorExercise(oc, 1, null);
+        [Fact]
+        public void MockClassWithOverloadedCtor()
+        {
+            OverLoadedCtor oc = MockRepository.Partial<OverLoadedCtor>(1);
+            oc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            OverLoadCtorExercise(oc, 1, null);
 
-			oc = MockRepository.Partial<OverLoadedCtor>("Hello");
-			OverLoadCtorExercise(oc, 0, "Hello");
+            oc = MockRepository.Partial<OverLoadedCtor>("Hello");
+            oc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            OverLoadCtorExercise(oc, 0, "Hello");
 
-			oc = MockRepository.Partial<OverLoadedCtor>(33, "Hello");
-			OverLoadCtorExercise(oc, 33, "Hello");
-		}
+            oc = MockRepository.Partial<OverLoadedCtor>(33, "Hello");
+            oc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            OverLoadCtorExercise(oc, 33, "Hello");
+        }
 
-		[Fact]
-		public void BadParamsToCtor()
-		{
-		    try
-		    {
+        [Fact]
+        public void BadParamsToCtor()
+        {
+            try
+            {
                 MockRepository.Partial<OverLoadedCtor>("Ayende", 55);
 
                 Assert.False(true, "The above call should have failed");
-		    }
-		    catch (ArgumentException argumentException)
-		    {
+            }
+            catch (ArgumentException argumentException)
+            {
                 Assert.Contains(
-					"Can not instantiate proxy of class: Rhino.Mocks.Tests.MockingClassesTests+OverLoadedCtor",
-					argumentException.Message);
-		    }			
-		}
+                    "Can not instantiate proxy of class: Rhino.Mocks.Tests.MockingClassesTests+OverLoadedCtor",
+                    argumentException.Message);
+            }
+        }
 
         [Fact]
-		public void ToStringMocked()
-		{
-            if (demoClass.ToString()=="")
+        public void ToStringMocked()
+        {
+            if (demoClass.ToString() == "")
             {
                 Assert.False(true, "ToString() of a mocked object is empty");
             }
-		}
+        }
 
-		[Fact]
-		public void GetTypeMocked()
-		{
-			Assert.True(typeof (DemoClass).IsAssignableFrom(demoClass.GetType()));
-		}
+        [Fact]
+        public void GetTypeMocked()
+        {
+            Assert.True(typeof(DemoClass).IsAssignableFrom(demoClass.GetType()));
+        }
 
-		[Fact]
-		public void GetHashCodeMocked()
-		{
-			Assert.Equal(demoClass.GetHashCode(), demoClass.GetHashCode());
-		}
+        [Fact]
+        public void GetHashCodeMocked()
+        {
+            Assert.Equal(demoClass.GetHashCode(), demoClass.GetHashCode());
+        }
 
-		[Fact]
-		public void EqualsMocked()
-		{
-			Assert.True(demoClass.Equals(demoClass));
-		}
+        [Fact]
+        public void EqualsMocked()
+        {
+            Assert.True(demoClass.Equals(demoClass));
+        }
 
-		private void OverLoadCtorExercise(OverLoadedCtor oc, int i, string s)
-		{
-			Assert.Equal(i, oc.I);
-			Assert.Equal(s, oc.S);
+        private void OverLoadCtorExercise(OverLoadedCtor oc, int i, string s)
+        {
+            Assert.Equal(i, oc.I);
+            Assert.Equal(s, oc.S);
 
             oc.Expect(x => x.Concat("Ayende", "Rahien"))
                 .Return("Hello, World");
 
-			Assert.Equal("Hello, World", oc.Concat("Ayende", "Rahien"));
+            Assert.Equal("Hello, World", oc.Concat("Ayende", "Rahien"));
             oc.VerifyAllExpectations();
-		}
+        }
 
         public class DemoClass : IDisposable
         {
@@ -261,5 +263,5 @@ namespace Rhino.Mocks.Tests
                 return base.GetHashCode();
             }
         }
-	}
+    }
 }

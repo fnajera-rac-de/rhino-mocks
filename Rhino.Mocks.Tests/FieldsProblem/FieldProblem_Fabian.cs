@@ -28,70 +28,72 @@
 
 
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Fabian
-	{
-		public delegate R Func<A1, R>(A1 a1);
+    public class FieldProblem_Fabian
+    {
+        public delegate R Func<A1, R>(A1 a1);
 
-		public delegate void Proc<A1, A2>(A1 a1, A2 a2);
+        public delegate void Proc<A1, A2>(A1 a1, A2 a2);
 
-		public delegate int StringInt(string s);
+        public delegate int StringInt(string s);
 
-		public interface ICache<TKey, TValue>
-		{
-			TValue GetValue(TKey key);
-			void Add(TKey key, TValue value);
-		}
+        public interface ICache<TKey, TValue>
+        {
+            TValue GetValue(TKey key);
+            void Add(TKey key, TValue value);
+        }
 
-		[Fact]
-		public void TestExpectCall()
-		{
-			ICache<string, int> mockCache = MockRepository.Mock<ICache<string, int>>();
+        [Fact]
+        public void TestExpectCall()
+        {
+            ICache<string, int> mockCache = MockRepository.Mock<ICache<string, int>>();
+            mockCache.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockCache.Expect(x => x.GetValue("a"))
-                .DoInstead((Func<string, int>)delegate
-                {
-                    return 1;
-                });
+                .DoInstead((Func<string, int>) delegate
+                 {
+                     return 1;
+                 });
 
-			int i = mockCache.GetValue("a");
-			Assert.Equal(1, i);
+            int i = mockCache.GetValue("a");
+            Assert.Equal(1, i);
 
             mockCache.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void TestLastCall()
-		{
+        [Fact]
+        public void TestLastCall()
+        {
             ICache<string, int> mockCache = MockRepository.Mock<ICache<string, int>>();
+            mockCache.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockCache.Expect(x => x.Add("a", 1))
-                .DoInstead((Proc<string, int>)delegate { });
+                .DoInstead((Proc<string, int>) delegate { });
 
-			mockCache.Add("a", 1);
+            mockCache.Add("a", 1);
             mockCache.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void TestExpectCallWithNonGenericDelegate()
-		{
-			ICache<string, int> mockCache = MockRepository.Mock<ICache<string, int>>();
+        [Fact]
+        public void TestExpectCallWithNonGenericDelegate()
+        {
+            ICache<string, int> mockCache = MockRepository.Mock<ICache<string, int>>();
+            mockCache.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockCache.Expect(x => x.GetValue("a"))
                 .DoInstead(new StringInt(GetValue));
-			
-			int i = mockCache.GetValue("a");
+
+            int i = mockCache.GetValue("a");
             Assert.Equal(2, i);
 
             mockCache.VerifyExpectations(true);
-		}
+        }
 
-		private int GetValue(string s)
-		{
-			return 2;
-		}
-	}
+        private int GetValue(string s)
+        {
+            return 2;
+        }
+    }
 }

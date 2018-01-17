@@ -32,94 +32,99 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Thierry
-	{
-		[Fact]
-		public void ReproducedWithOutArraysContainingMockedObject2()
-		{
-			IPlugin plugin = MockRepository.Mock<IPlugin>();
-			IPlugin[] allPlugins;
+    public class FieldProblem_Thierry
+    {
+        [Fact]
+        public void ReproducedWithOutArraysContainingMockedObject2()
+        {
+            IPlugin plugin = MockRepository.Mock<IPlugin>();
+            plugin.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            IPlugin[] allPlugins;
 
-			// PluginMng
-			IPluginMng pluginMng = MockRepository.Mock<IPluginMng>();
+            // PluginMng
+            IPluginMng pluginMng = MockRepository.Mock<IPluginMng>();
+            pluginMng.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             pluginMng.Expect(x => x.GetPlugins(out allPlugins))
                 .IgnoreArguments()
                 .OutRef(new object[] { new IPlugin[] { plugin } });
 
-			pluginMng.GetPlugins(out allPlugins);
+            pluginMng.GetPlugins(out allPlugins);
 
-			Assert.Equal(1, allPlugins.Length);
-			Assert.Same(plugin, allPlugins[0]);
+            Assert.Equal(1, allPlugins.Length);
+            Assert.Same(plugin, allPlugins[0]);
 
             pluginMng.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void MockGenericMethod1()
-		{
+        [Fact]
+        public void MockGenericMethod1()
+        {
             byte myValue = 3;
             int returnedValue = 3;
 
-			IWithGeneric1 stubbed = MockRepository.Mock<IWithGeneric1>();
+            IWithGeneric1 stubbed = MockRepository.Mock<IWithGeneric1>();
+            stubbed.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stubbed.Expect(s => s.DoNothing<byte>(myValue))
                 .Return(returnedValue);
-			
-			int x = stubbed.DoNothing<byte>(myValue);
-			Assert.Equal(myValue, x);
+
+            int x = stubbed.DoNothing<byte>(myValue);
+            Assert.Equal(myValue, x);
 
             stubbed.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void MockGenericMethod2()
-		{
+        [Fact]
+        public void MockGenericMethod2()
+        {
             byte myValue = 4;
 
-			IWithGeneric2 stubbed = MockRepository.Mock<IWithGeneric2>();
+            IWithGeneric2 stubbed = MockRepository.Mock<IWithGeneric2>();
+            stubbed.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stubbed.Expect(s => s.DoNothing<byte>(myValue))
                 .Return(myValue);
-			
-			byte x = stubbed.DoNothing<byte>(myValue);
-			Assert.Equal(myValue, x);
+
+            byte x = stubbed.DoNothing<byte>(myValue);
+            Assert.Equal(myValue, x);
 
             stubbed.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void CanMockComplexReturnType()
-		{
+        [Fact]
+        public void CanMockComplexReturnType()
+        {
             byte myValue = 4;
             List<byte> bytes = new List<byte>();
             bytes.Add(myValue);
 
             IWithGeneric2 stubbed = MockRepository.Mock<IWithGeneric2>();
+            stubbed.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             stubbed.Expect(x => x.DoNothing<IList<byte>>(null))
                 .Return(bytes);
 
-			IList<byte> bytesResult = stubbed.DoNothing<IList<byte>>(null);
-			Assert.Equal(bytes, bytesResult);
+            IList<byte> bytesResult = stubbed.DoNothing<IList<byte>>(null);
+            Assert.Equal(bytes, bytesResult);
 
             stubbed.VerifyExpectations(true);
-		}
-	}
+        }
+    }
 
-	public interface IWithGeneric2
-	{
-		T DoNothing<T>(T x);
-	}
+    public interface IWithGeneric2
+    {
+        T DoNothing<T>(T x);
+    }
 
-	public interface IWithGeneric1
-	{
-		int DoNothing<T>(T x);
-	}
+    public interface IWithGeneric1
+    {
+        int DoNothing<T>(T x);
+    }
 
 
-	public interface IPluginMng
-	{
-		void GetPlugins(out IPlugin[] plugins);
-	}
+    public interface IPluginMng
+    {
+        void GetPlugins(out IPlugin[] plugins);
+    }
 
-	public interface IPlugin
-	{
-	}
+    public interface IPlugin
+    {
+    }
 }

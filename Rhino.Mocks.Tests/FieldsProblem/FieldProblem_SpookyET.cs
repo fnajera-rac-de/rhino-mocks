@@ -52,7 +52,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             Stream stream = new MemoryStream(responseData);
 
             WebRequest request = MockRepository.Mock<WebRequest>();
+            request.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             WebResponse response = MockRepository.Mock<WebResponse>();
+            response.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             request.Expect(x => x.GetResponse())
                 .Return(response);
@@ -78,6 +80,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void UsingReturnAndThenIgnoreArgs()
         {
             IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.StringArgString(null))
                 .IgnoreArguments()
@@ -91,7 +94,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void WebRequestWhenDisposing()
         {
             WebRequest webRequestMock = MockRepository.Mock<WebRequest>();
+            webRequestMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             WebResponse webResponseMock = MockRepository.Mock<WebResponse>();
+            webResponseMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             webRequestMock.Expect(x => x.GetResponse())
                 .Return(webResponseMock);

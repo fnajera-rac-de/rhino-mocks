@@ -33,75 +33,79 @@ using Xunit;
 namespace Rhino.Mocks.Tests
 {
     public class MockingAbstractClass : IDisposable
-	{
-		public MockingAbstractClass()
-		{
-		}
+    {
+        public MockingAbstractClass()
+        {
+        }
 
-		public void Dispose()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		[Fact]
-		public void MockAbsPropertyGetter()
-		{
-			AbsCls ac = MockRepository.Partial<AbsCls>();
+        [Fact]
+        public void MockAbsPropertyGetter()
+        {
+            AbsCls ac = MockRepository.Partial<AbsCls>();
+            ac.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             ac.Expect(x => x.AbPropGet)
                 .Return("n");
 
-			Assert.Equal("n", ac.AbPropGet);
+            Assert.Equal("n", ac.AbPropGet);
             ac.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void MockAbsPropertySetter()
-		{
-			AbsCls ac = MockRepository.Mock<AbsCls>();
+        [Fact]
+        public void MockAbsPropertySetter()
+        {
+            AbsCls ac = MockRepository.Mock<AbsCls>();
+            ac.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             ac.Expect(x => x.AbPropSet = "n");
-			
-			ac.AbPropSet = "n";
+
+            ac.AbPropSet = "n";
             ac.VerifyAllExpectations();
-		}
+        }
 
 
-		[Fact]
-		public void MockAbsProp()
-		{
-			AbsCls ac = MockRepository.Mock<AbsCls>();
+        [Fact]
+        public void MockAbsProp()
+        {
+            AbsCls ac = MockRepository.Mock<AbsCls>();
+            ac.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             ac.Expect(x => x.AbProp = "n");
             ac.Expect(x => x.AbProp)
                 .Return("u");
 
-			ac.AbProp = "n";
-			Assert.Equal("u", ac.AbProp);
+            ac.AbProp = "n";
+            Assert.Equal("u", ac.AbProp);
             ac.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void MockAbstractMethod()
-		{
-			AbsCls ac = MockRepository.Mock<AbsCls>();
+        [Fact]
+        public void MockAbstractMethod()
+        {
+            AbsCls ac = MockRepository.Mock<AbsCls>();
+            ac.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             ac.Expect(x => x.Method())
                 .Return(45);
-			
-			Assert.Equal(45, ac.Method());
+
+            Assert.Equal(45, ac.Method());
             ac.VerifyAllExpectations();
-		}
+        }
 
-		public abstract class AbsCls
-		{
-			public abstract string AbPropGet { get; }
+        public abstract class AbsCls
+        {
+            public abstract string AbPropGet { get; }
 
-			public abstract string AbPropSet { set; }
+            public abstract string AbPropSet { set; }
 
-			public abstract string AbProp { get; set; }
+            public abstract string AbProp { get; set; }
 
-			public abstract int Method();
+            public abstract int Method();
 
-		}
-	}
+        }
+    }
 }

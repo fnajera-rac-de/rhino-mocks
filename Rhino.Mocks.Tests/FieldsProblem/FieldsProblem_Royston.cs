@@ -27,10 +27,7 @@
 #endregion
 
 
-using System;
-using System.Text;
 using Xunit;
-using Rhino.Mocks;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -40,25 +37,27 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         {
         }
 
-		public interface IDuplicateType<T>
-		{
-			int Property { get; }
-		}
+        public interface IDuplicateType<T>
+        {
+            int Property { get; }
+        }
 
-		[Fact]
-		public void DuplicateTypeTest()
-		{
-			// Let's just create two mocks of the same type, based on
-			// an array type parameter.
+        [Fact]
+        public void DuplicateTypeTest()
+        {
+            // Let's just create two mocks of the same type, based on
+            // an array type parameter.
 
-			// This should not blow up.
+            // This should not blow up.
 
             IDuplicateType<object[]> mock1 = MockRepository.Mock<IDuplicateType<object[]>>();
+            mock1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             IDuplicateType<object[]> mock2 = MockRepository.Mock<IDuplicateType<object[]>>();
+            mock2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock1.VerifyExpectations(true);
             mock2.VerifyExpectations(true);
-		}
+        }
 
         [Fact]
         public void TestVirtualEntrypoint()
@@ -80,7 +79,8 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
         private IIntf1 CreateAndConfigureMock()
         {
-            IIntf1 i1 = (IIntf1)MockRepository.Partial<Cls1>();
+            IIntf1 i1 = (IIntf1) MockRepository.Partial<Cls1>();
+            i1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             i1.Expect(x => x.A());
             i1.Expect(x => x.B());
             i1.Expect(x => x.A());

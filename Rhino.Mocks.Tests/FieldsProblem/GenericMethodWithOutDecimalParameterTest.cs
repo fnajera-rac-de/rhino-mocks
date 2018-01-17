@@ -3,19 +3,20 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class GenericMethodWithOutDecimalParameterTest
-	{
-		public interface IMyInterface
-		{
-			void GenericMethod<T>(out T parameter);
-		}
+    public class GenericMethodWithOutDecimalParameterTest
+    {
+        public interface IMyInterface
+        {
+            void GenericMethod<T>(out T parameter);
+        }
 
-		[Fact]
-		public void GenericMethodWithOutDecimalParameter()
-		{
+        [Fact]
+        public void GenericMethodWithOutDecimalParameter()
+        {
             IMyInterface mock = MockRepository.Mock<IMyInterface>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			decimal expectedOutParameter = 1.234M;
+            decimal expectedOutParameter = 1.234M;
             //decimal emptyOutParameter;
 
             mock.Expect(x => x.GenericMethod(out Arg<decimal>.Out(expectedOutParameter).Dummy));
@@ -23,16 +24,16 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             decimal outParameter;
             mock.GenericMethod(out outParameter);
             Assert.Equal(expectedOutParameter, outParameter);
-		}
+        }
 
-		public static void Foo(out decimal d)
-		{
-			d = 1.234M;
-		}
+        public static void Foo(out decimal d)
+        {
+            d = 1.234M;
+        }
 
-		public static void Foo(out int d)
-		{
-			d = 1;
-		}
-	}
+        public static void Foo(out int d)
+        {
+            d = 1;
+        }
+    }
 }

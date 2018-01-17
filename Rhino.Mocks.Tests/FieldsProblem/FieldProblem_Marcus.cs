@@ -54,13 +54,14 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             try
             {
                 ClassWithThrowingCtor c = MockRepository.Mock<ClassWithThrowingCtor>();
+                c.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
                 Assert.NotNull(c);
                 Assert.False(true, "Exception expected");
             }
             catch (Exception e)
             {
                 string expectedExceptionStartsWith = @"Exception was thrown in constructor: System.Exception: I'm a ctor that throws";
-                string actualExceptionStartString = e.Message.Substring(0,expectedExceptionStartsWith.Length);
+                string actualExceptionStartString = e.Message.Substring(0, expectedExceptionStartsWith.Length);
                 Assert.Equal(expectedExceptionStartsWith, actualExceptionStartString);
             }
         }

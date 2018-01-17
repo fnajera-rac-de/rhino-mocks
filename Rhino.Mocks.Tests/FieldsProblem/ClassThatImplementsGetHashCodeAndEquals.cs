@@ -28,17 +28,15 @@
 
 
 using System;
-using System.Data;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	/// <summary>
-	/// Summary description for Bug_45.
-	/// </summary>
-	public class ClassThatImplementsGetHashCodeAndEquals : IDisposable
-	{
+    /// <summary>
+    /// Summary description for Bug_45.
+    /// </summary>
+    public class ClassThatImplementsGetHashCodeAndEquals : IDisposable
+    {
         public ClassThatImplementsGetHashCodeAndEquals()
         {
         }
@@ -46,60 +44,61 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void Dispose()
         {
         }
-	    
-		[Fact]
-		public void InitClass()
-		{
-			EmployeeInfo info = MockRepository.Mock<EmployeeInfo>("ID001");
-			Assert.NotNull(info);
-		}
 
-		[Serializable]
-		public class EmployeeInfo 
-		{
-			public EmployeeInfo(string employeeId) 
-			{
-				if (employeeId == null || employeeId.Length == 0) 
-				{
-					throw new ArgumentNullException("employeeId");
-				}
+        [Fact]
+        public void InitClass()
+        {
+            EmployeeInfo info = MockRepository.Mock<EmployeeInfo>("ID001");
+            info.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.NotNull(info);
+        }
 
-			}
-		
-			#region Object Members
-   
-			/// <summary>
-			/// Returns a string representation of this instance.
-			/// </summary>
-			public override string ToString() 
-			{
-				return null;
-			}
-   
-			/// <summary>
-			/// Gets the hash code for this instance.
-			/// </summary>
-			public override int GetHashCode() 
-			{
-				return this.ToString().GetHashCode();
-			}
-   
-			/// <summary>
-			/// Determines whether the specified instance is equal to this instance.
-			/// </summary>
-			public override bool Equals(object obj) 
-			{
-				EmployeeInfo objToCompare = obj as EmployeeInfo;
-      
-				if (objToCompare == null) 
-				{
-					return false;
-				}
-      
-				return (this.GetHashCode() == objToCompare.GetHashCode());
-			}
-   
-			#endregion
-		}
-	}
+        [Serializable]
+        public class EmployeeInfo
+        {
+            public EmployeeInfo(string employeeId)
+            {
+                if (employeeId == null || employeeId.Length == 0)
+                {
+                    throw new ArgumentNullException("employeeId");
+                }
+
+            }
+
+            #region Object Members
+
+            /// <summary>
+            /// Returns a string representation of this instance.
+            /// </summary>
+            public override string ToString()
+            {
+                return null;
+            }
+
+            /// <summary>
+            /// Gets the hash code for this instance.
+            /// </summary>
+            public override int GetHashCode()
+            {
+                return this.ToString().GetHashCode();
+            }
+
+            /// <summary>
+            /// Determines whether the specified instance is equal to this instance.
+            /// </summary>
+            public override bool Equals(object obj)
+            {
+                EmployeeInfo objToCompare = obj as EmployeeInfo;
+
+                if (objToCompare == null)
+                {
+                    return false;
+                }
+
+                return (this.GetHashCode() == objToCompare.GetHashCode());
+            }
+
+            #endregion
+        }
+    }
 }

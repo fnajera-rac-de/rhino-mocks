@@ -5,24 +5,25 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-    
+
     public class RecursiveMocks
     {
         [Fact]
         public void CanUseRecursiveMocks()
         {
             var session = MockRepository.Mock<ISession>();
+            session.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             session.Stub(x => x.CreateCriteria(typeof(Customer)).List())
-                .Return(new[] 
+                .Return(new[]
                 {
-                    new Customer 
+                    new Customer
                     {
-                        Id = 1, 
+                        Id = 1,
                         Name = "ayende"
                     }
                 });
 
-            Customer customer = session.CreateCriteria(typeof (Customer))
+            Customer customer = session.CreateCriteria(typeof(Customer))
                 .List().Cast<Customer>().First();
 
             Assert.Equal("ayende", customer.Name);
@@ -33,6 +34,7 @@ namespace Rhino.Mocks.Tests
         public void CanUseRecursiveMocksSimpler()
         {
             var repository = MockRepository.Mock<IMyService>();
+            repository.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             repository.Expect(x => x.Identity.Name)
                 .Return("foo");
@@ -40,18 +42,19 @@ namespace Rhino.Mocks.Tests
             Assert.Equal("foo", repository.Identity.Name);
         }
 
-		[Fact]
+        [Fact]
         public void CanUseRecursiveMocksSimplerAlternateSyntax()
         {
             var repository = MockRepository.Mock<IMyService>();
+            repository.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             repository.Expect(x => x.Identity.Name)
                 .Return("foo");
-            
+
             Assert.Equal("foo", repository.Identity.Name);
         }
 
-		public interface ISession
+        public interface ISession
         {
             ICriteria CreateCriteria(Type type);
         }

@@ -30,111 +30,113 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Kevin
-	{
-		//This is related to an initialization mechanism in use for the CodeGenerationServices on Castle.Contrib
-		//I am not sure if this is related to invalid construction of the object. Resharper complains that invoking virtual methods from ctors is a bad idea. 
-		//It surely seems that it is preventing me from partial mocking a class that has some complex construction. 
-		
-		[Fact]
-		public void Virtual_protected_method_called_from_ctor_is_not_called_during_partial_mock_construction()
-		{
-			string mockedResult = "mocked result";
+    public class FieldProblem_Kevin
+    {
+        //This is related to an initialization mechanism in use for the CodeGenerationServices on Castle.Contrib
+        //I am not sure if this is related to invalid construction of the object. Resharper complains that invoking virtual methods from ctors is a bad idea. 
+        //It surely seems that it is preventing me from partial mocking a class that has some complex construction. 
 
-            ConcreteProtectedMethodCalledFromCtor concreteProtectedMethodCalledFromCtor = 
+        [Fact]
+        public void Virtual_protected_method_called_from_ctor_is_not_called_during_partial_mock_construction()
+        {
+            string mockedResult = "mocked result";
+
+            ConcreteProtectedMethodCalledFromCtor concreteProtectedMethodCalledFromCtor =
                 MockRepository.Partial<ConcreteProtectedMethodCalledFromCtor>();
+            concreteProtectedMethodCalledFromCtor.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             concreteProtectedMethodCalledFromCtor.Expect(x => x.SimplyHereSoThereIsSomethingToMock())
                 .Return(mockedResult);
 
-			string result = concreteProtectedMethodCalledFromCtor.SimplyHereSoThereIsSomethingToMock();
+            string result = concreteProtectedMethodCalledFromCtor.SimplyHereSoThereIsSomethingToMock();
 
-			Assert.Equal(mockedResult, result);
-			Assert.Equal(true, concreteProtectedMethodCalledFromCtor.WasAbstractMethodCalledFromCtor);
+            Assert.Equal(mockedResult, result);
+            Assert.Equal(true, concreteProtectedMethodCalledFromCtor.WasAbstractMethodCalledFromCtor);
 
             concreteProtectedMethodCalledFromCtor.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void Virtual_public_method_called_from_ctor_is_not_called_during_partial_mock_construction()
-		{
-			string mockedResult = "mocked result";
+        [Fact]
+        public void Virtual_public_method_called_from_ctor_is_not_called_during_partial_mock_construction()
+        {
+            string mockedResult = "mocked result";
 
-            ConcretePublicMethodCalledFromCtor concretePublicMethodCalledFromCtor = 
+            ConcretePublicMethodCalledFromCtor concretePublicMethodCalledFromCtor =
                 MockRepository.Partial<ConcretePublicMethodCalledFromCtor>();
+            concretePublicMethodCalledFromCtor.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             concretePublicMethodCalledFromCtor.Expect(x => x.SimplyHereSoThereIsSomethingToMock())
                 .Return(mockedResult);
 
-			string result = concretePublicMethodCalledFromCtor.SimplyHereSoThereIsSomethingToMock();
+            string result = concretePublicMethodCalledFromCtor.SimplyHereSoThereIsSomethingToMock();
 
-			Assert.Equal(mockedResult, result);
-			Assert.Equal(true, concretePublicMethodCalledFromCtor.WasAbstractMethodCalledFromCtor);
+            Assert.Equal(mockedResult, result);
+            Assert.Equal(true, concretePublicMethodCalledFromCtor.WasAbstractMethodCalledFromCtor);
 
             concretePublicMethodCalledFromCtor.VerifyAllExpectations();
-		}
-	}
+        }
+    }
 
-	//Abstract Protected
+    //Abstract Protected
 
-	public class ConcreteProtectedMethodCalledFromCtor : ProtectedExampleCalledFromCtor
-	{
-		protected override void AbstractCalledFromCtor()
-		{
-			_wasAbstractMethodCalledFromCtor = true;
-		}
-	}
+    public class ConcreteProtectedMethodCalledFromCtor : ProtectedExampleCalledFromCtor
+    {
+        protected override void AbstractCalledFromCtor()
+        {
+            _wasAbstractMethodCalledFromCtor = true;
+        }
+    }
 
-	public abstract class ProtectedExampleCalledFromCtor
-	{
-		protected bool _wasAbstractMethodCalledFromCtor = false;
+    public abstract class ProtectedExampleCalledFromCtor
+    {
+        protected bool _wasAbstractMethodCalledFromCtor = false;
 
-		public bool WasAbstractMethodCalledFromCtor
-		{
-			get { return _wasAbstractMethodCalledFromCtor; }
-		}
+        public bool WasAbstractMethodCalledFromCtor
+        {
+            get { return _wasAbstractMethodCalledFromCtor; }
+        }
 
-		public ProtectedExampleCalledFromCtor()
-		{
-			AbstractCalledFromCtor();
-		}
+        public ProtectedExampleCalledFromCtor()
+        {
+            AbstractCalledFromCtor();
+        }
 
-		protected abstract void AbstractCalledFromCtor();
+        protected abstract void AbstractCalledFromCtor();
 
-		public virtual string SimplyHereSoThereIsSomethingToMock()
-		{
-			return "If this value is returned the method was not mocked";
-		}
-	}
+        public virtual string SimplyHereSoThereIsSomethingToMock()
+        {
+            return "If this value is returned the method was not mocked";
+        }
+    }
 
-	//Abstract Public
-	public class ConcretePublicMethodCalledFromCtor : PublicExampleCalledFromCtor
-	{
-	    public override void AbstractCalledFromCtor()
-	    {
-	        _wasAbstractMethodCalledFromCtor = true;
-	    }
-	}
+    //Abstract Public
+    public class ConcretePublicMethodCalledFromCtor : PublicExampleCalledFromCtor
+    {
+        public override void AbstractCalledFromCtor()
+        {
+            _wasAbstractMethodCalledFromCtor = true;
+        }
+    }
 
-	public abstract class PublicExampleCalledFromCtor
-	{
-	    protected bool _wasAbstractMethodCalledFromCtor = false;
+    public abstract class PublicExampleCalledFromCtor
+    {
+        protected bool _wasAbstractMethodCalledFromCtor = false;
 
-	    public bool WasAbstractMethodCalledFromCtor
-	    {
-	        get { return _wasAbstractMethodCalledFromCtor; }
-	    }
+        public bool WasAbstractMethodCalledFromCtor
+        {
+            get { return _wasAbstractMethodCalledFromCtor; }
+        }
 
-	    public PublicExampleCalledFromCtor()
-	    {
-	        AbstractCalledFromCtor();
-	    }
+        public PublicExampleCalledFromCtor()
+        {
+            AbstractCalledFromCtor();
+        }
 
-	    public abstract void AbstractCalledFromCtor();
+        public abstract void AbstractCalledFromCtor();
 
-	    public virtual string SimplyHereSoThereIsSomethingToMock()
-	    {
-	        return "If this value is returned the method was not mocked";
-	    }
-	}
+        public virtual string SimplyHereSoThereIsSomethingToMock()
+        {
+            return "If this value is returned the method was not mocked";
+        }
+    }
 }

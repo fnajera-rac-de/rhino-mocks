@@ -28,108 +28,114 @@
 
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
-using Rhino.Mocks.Interfaces;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class UsingEvents
-	{
+    public class UsingEvents
+    {
         public UsingEvents()
-		{
-		}
+        {
+        }
 
-		[Fact]
-		public void VerifyingThatEventWasAttached()
-		{
+        [Fact]
+        public void VerifyingThatEventWasAttached()
+        {
             IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             events.ExpectEvent(x => x.Blah += new EventHandler(events_Blah));
 
-			MethodThatSubscribeToEventBlah(events);
+            MethodThatSubscribeToEventBlah(events);
 
             events.VerifyExpectations();
-		}
+        }
 
-		public void MethodThatSubscribeToEventBlah(IWithEvents events)
-		{
-			events.Blah += new EventHandler(events_Blah);
-		}
+        public void MethodThatSubscribeToEventBlah(IWithEvents events)
+        {
+            events.Blah += new EventHandler(events_Blah);
+        }
 
-		[Fact]
-		public void VerifyingThatAnEventWasFired()
-		{
+        [Fact]
+        public void VerifyingThatAnEventWasFired()
+        {
             IEventSubscriber subscriber = MockRepository.Mock<IEventSubscriber>();
+            subscriber.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             IWithEvents events = new WithEvents();
 
             // This doesn't create an expectation because no method is called on subscriber!!
             events.Blah += new EventHandler(subscriber.Hanlder);
             subscriber.Expect(x => x.Hanlder(events, EventArgs.Empty));
-            			
-			events.RaiseEvent();
+
+            events.RaiseEvent();
 
             subscriber.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void VerifyingThatAnEventWasFiredThrowsForDifferentArgument()
-		{
+        [Fact]
+        public void VerifyingThatAnEventWasFiredThrowsForDifferentArgument()
+        {
             IEventSubscriber subscriber = MockRepository.Mock<IEventSubscriber>();
-			IWithEvents events = new WithEvents();
-			
+            subscriber.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            IWithEvents events = new WithEvents();
+
             // This doesn't create an expectation because no method is called on subscriber!!
-			events.Blah += new EventHandler(subscriber.Hanlder);
+            events.Blah += new EventHandler(subscriber.Hanlder);
             subscriber.Expect(x => x.Hanlder(events, new EventArgs()));
 
             events.RaiseEvent();
 
-			Assert.Throws<ExpectationViolationException>(
-				() => subscriber.VerifyExpectations(true));
-		}
+            Assert.Throws<ExpectationViolationException>(
+                () => subscriber.VerifyExpectations(true));
+        }
 
-		[Fact]
-		public void CanSetExpectationToUnsubscribeFromEvent()
-		{
+        [Fact]
+        public void CanSetExpectationToUnsubscribeFromEvent()
+        {
             IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Blah += new EventHandler(events_Blah));
             events.ExpectEvent(x => x.Blah -= new EventHandler(events_Blah));
-			
 
-			events.Blah += new EventHandler(events_Blah);
-			events.Blah -= new EventHandler(events_Blah);
+
+            events.Blah += new EventHandler(events_Blah);
+            events.Blah -= new EventHandler(events_Blah);
 
             events.VerifyExpectations();
-		}
+        }
 
-		[Fact]
-		public void VerifyingExceptionIfEventIsNotAttached()
-		{
-			IWithEvents events = MockRepository.Mock<IWithEvents>();
+        [Fact]
+        public void VerifyingExceptionIfEventIsNotAttached()
+        {
+            IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Blah += new EventHandler(events_Blah));
 
-			Assert.Throws<ExpectationViolationException>(
+            Assert.Throws<ExpectationViolationException>(
                 () => events.VerifyExpectations());
-		}
+        }
 
-		[Fact]
-		public void VerifyingThatCanAttackOtherEvent()
-		{
+        [Fact]
+        public void VerifyingThatCanAttackOtherEvent()
+        {
             IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Blah += new EventHandler(events_Blah))
                 .IgnoreArguments();
 
-			events.Blah += new EventHandler(events_Blah_Other);
+            events.Blah += new EventHandler(events_Blah_Other);
 
             events.VerifyExpectations();
-		}
+        }
 
         [Fact]
         public void BetterErrorMessageOnIncorrectParametersCount()
         {
             IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Blah += null)
                 .IgnoreArguments();
@@ -144,6 +150,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void BetterErrorMessageOnIncorrectParameters()
         {
             IWithEvents events = MockRepository.Mock<IWithEvents>();
+            events.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             events.ExpectEvent(x => x.Blah += null)
                 .IgnoreArguments();
@@ -159,18 +166,20 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void RaiseEvent()
         {
             IWithEvents eventHolder = MockRepository.Mock<IWithEvents>();
+            eventHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             eventHolder.ExpectEvent(x => x.Blah += null)
                 .IgnoreArguments();
 
             eventHolder.Expect(x => x.RaiseEvent())
-                .DoInstead(new System.Threading.ThreadStart(delegate()
+                .DoInstead(new System.Threading.ThreadStart(delegate ()
                     {
                         eventHolder.Raise(x => x.Blah += null,
                             new object[] { this, EventArgs.Empty });
                     }));
 
             IEventSubscriber eventSubscriber = MockRepository.Mock<IEventSubscriber>();
+            eventSubscriber.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             eventSubscriber.Expect(x => x.Hanlder(this, EventArgs.Empty));
 
             eventHolder.Blah += new EventHandler(eventSubscriber.Hanlder);
@@ -184,6 +193,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void UsingEventRaiserCreate()
         {
             IWithEvents eventHolder = MockRepository.Mock<IWithEvents>();
+            eventHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             eventHolder.ExpectEvent(x => x.Blah += null);
 
@@ -203,6 +213,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void RaiseEventUsingExtensionMethod()
         {
             IWithEvents eventHolder = MockRepository.Mock<IWithEvents>();
+            eventHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             bool called = false;
             eventHolder.Blah += delegate
@@ -219,9 +230,10 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void UsingEventRaiserFromExtensionMethod()
         {
             IWithEvents eventHolder = MockRepository.Mock<IWithEvents>();
+            eventHolder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             eventHolder.StubEvent(x => x.Blah += null);
-            
+
             bool called = false;
             eventHolder.Blah += delegate
             {
@@ -241,27 +253,27 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         private void events_Blah(object sender, EventArgs e)
         {
         }
-	}
+    }
 
-	public interface IWithEvents
-	{
-		event EventHandler Blah;
-		void RaiseEvent();
-	}
+    public interface IWithEvents
+    {
+        event EventHandler Blah;
+        void RaiseEvent();
+    }
 
-	public interface IEventSubscriber
-	{
-		void Hanlder(object sender, EventArgs e);
-	}
+    public interface IEventSubscriber
+    {
+        void Hanlder(object sender, EventArgs e);
+    }
 
-	public class WithEvents : IWithEvents
-	{
-		public event System.EventHandler Blah;
+    public class WithEvents : IWithEvents
+    {
+        public event System.EventHandler Blah;
 
-		public void RaiseEvent()
-		{
-			if (Blah != null)
-				Blah(this, EventArgs.Empty);
-		}
-	}
+        public void RaiseEvent()
+        {
+            if (Blah != null)
+                Blah(this, EventArgs.Empty);
+        }
+    }
 }

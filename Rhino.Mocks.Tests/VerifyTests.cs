@@ -28,32 +28,34 @@
 
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class VerifyTests : IDisposable
-	{
-		private ConcreteDemo demoParam;
-		private IDemo demo;
+    public class VerifyTests : IDisposable
+    {
+        private ConcreteDemo demoParam;
+        private IDemo demo;
 
-		public  VerifyTests()
-		{
+        public VerifyTests()
+        {
             demoParam = MockRepository.Partial<ConcreteDemo>();
+            demoParam.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             demo = MockRepository.Mock<IDemo>();
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		public void Dispose()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		[Fact]
-		public void MockParameterToStringShouldBeIgnoredIfItIsInVerifyState()
-		{
+        [Fact]
+        public void MockParameterToStringShouldBeIgnoredIfItIsInVerifyState()
+        {
             demo.Expect(x => x.VoidConcreteDemo(demoParam));
 
             Assert.Throws<ExpectationViolationException>(() => demo.VerifyAllExpectations());
-		}
-	}
+        }
+    }
 }

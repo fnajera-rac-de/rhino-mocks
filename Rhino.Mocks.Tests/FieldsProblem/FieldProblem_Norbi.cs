@@ -24,6 +24,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void Can_Create_Two_Expectations_Against_Func()
         {
             var mock = MockRepository.Mock<IFuncTest<IParam>>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.Get("Test1"))
                 .Return(() => new Param { Text = "ParamWithText1" });
 

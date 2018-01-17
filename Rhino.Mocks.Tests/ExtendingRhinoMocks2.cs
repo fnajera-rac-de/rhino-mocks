@@ -27,24 +27,25 @@
 #endregion
 
 
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class ExtendingRhinoMocks2
-	{
-		[Fact]
-		public void DeleteThisTest()
-		{
-			MockedClass mock = MockRepository.Partial<MockedClass>();
-			
+    public class ExtendingRhinoMocks2
+    {
+        [Fact]
+        public void DeleteThisTest()
+        {
+            MockedClass mock = MockRepository.Partial<MockedClass>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             mock.Expect(x => x.Method("expectedParameter"));
             mock.Method("invalidParameter");
 
-			Assert.Throws<ExpectationViolationException>(() => mock.VerifyExpectations());
-		}
-	}
+            Assert.Throws<ExpectationViolationException>(() => mock.VerifyExpectations());
+        }
+    }
 
     public class MockedClass
     {

@@ -27,18 +27,17 @@
 #endregion
 
 
-using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-    public class FieldProblem_JohanIndexProp 
+    public class FieldProblem_JohanIndexProp
     {
         [Fact]
         public void StrictMockWithIndexedProp()
         {
             IWithIndexedProperty index = MockRepository.Mock<IWithIndexedProperty>();
+            index.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             index.Expect(x => x.get_Foo("Blah"))
                 .Return(5);

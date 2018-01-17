@@ -2,12 +2,13 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Benjamin
-	{
-		[Fact]
+    public class FieldProblem_Benjamin
+    {
+        [Fact]
         public void ThisTestPasses()
         {
             var interfaceStub = MockRepository.Mock<InterfaceINeedToStub>();
+            interfaceStub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             interfaceStub.Stub(x => x.MyStringValue)
                 .Return("string");
@@ -20,6 +21,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void ThisTestDoesNotPass()
         {
             var myInterface = MockRepository.Mock<InterfaceINeedToStub>();
+            myInterface.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             // Changed order of property initialization
             myInterface.MyIntValue = 4;
@@ -28,11 +30,11 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 
             Assert.Equal(4, myInterface.MyIntValue);
         }
-	}
+    }
 
-	public interface InterfaceINeedToStub
-	{
-		int MyIntValue { get; set; }
-		string MyStringValue { get; }
-	}
+    public interface InterfaceINeedToStub
+    {
+        int MyIntValue { get; set; }
+        string MyStringValue { get; }
+    }
 }

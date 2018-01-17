@@ -28,7 +28,6 @@
 
 
 using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests
@@ -39,14 +38,15 @@ namespace Rhino.Mocks.Tests
         {
             Scripting.FileSystemObject GetFileSystemObject();
         }
-        
+
         [Fact]
         public void UsingScriptingFileSystem()
         {
             Type fsoType = Type.GetTypeFromProgID("Scripting.FileSystemObject");
-            Scripting.FileSystemObject fso = (Scripting.FileSystemObject)Activator.CreateInstance(fsoType);
+            Scripting.FileSystemObject fso = (Scripting.FileSystemObject) Activator.CreateInstance(fsoType);
 
             IMockTest test = MockRepository.Mock<IMockTest>();
+            test.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             test.Expect(x => x.GetFileSystemObject())
                 .Return(fso);
 

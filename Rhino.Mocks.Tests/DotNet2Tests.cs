@@ -29,18 +29,18 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Exceptions;
 
 namespace Rhino.Mocks.Tests
 {
-	public class DotNet2Tests : IDisposable
-	{
-		private IDotNet2Features demo;
+    public class DotNet2Tests : IDisposable
+    {
+        private IDotNet2Features demo;
 
-		public DotNet2Tests()
-		{
+        public DotNet2Tests()
+        {
             demo = MockRepository.Mock<IDotNet2Features>();
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
         public void Dispose()
         {
@@ -57,7 +57,7 @@ namespace Rhino.Mocks.Tests
         public void CanUseNullAsReturnValueForNullables()
         {
             demo.Expect(x => x.NullableInt(5))
-                .Return((Nullable<int>)null);
+                .Return((Nullable<int>) null);
 
             Assert.Null(demo.NullableInt(5));
         }
@@ -71,35 +71,36 @@ namespace Rhino.Mocks.Tests
             Assert.Equal(5, demo.NullableInt(53));
         }
 
-		[Fact]
-		public void CanStrictMockOnClassWithInternalMethod()
-		{
+        [Fact]
+        public void CanStrictMockOnClassWithInternalMethod()
+        {
             WithInternalMethod withInternalMethod = MockRepository.Partial<WithInternalMethod>();
+            withInternalMethod.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             withInternalMethod.Expect(x => x.Foo())
                 .Throws(new Exception("foo"));
 
             try
-			{
-				withInternalMethod.Foo();
-				Assert.False(true, "Should have thrown");
-			}
-			catch (Exception e)
-			{
-				Assert.Equal("foo", e.Message);
-			}
-		}
+            {
+                withInternalMethod.Foo();
+                Assert.False(true, "Should have thrown");
+            }
+            catch (Exception e)
+            {
+                Assert.Equal("foo", e.Message);
+            }
+        }
 
-		internal interface IDotNet2Features
+        internal interface IDotNet2Features
         {
             int? NullableInt(int i);
         }
 
-		public class WithInternalMethod
-		{
-			internal virtual void Foo()
-			{
-			}
-		}
-	}
+        public class WithInternalMethod
+        {
+            internal virtual void Foo()
+            {
+            }
+        }
+    }
 }

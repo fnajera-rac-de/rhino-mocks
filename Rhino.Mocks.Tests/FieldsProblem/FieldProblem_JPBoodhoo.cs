@@ -15,9 +15,10 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         {
             VirtualClass target;
 
-			public  when_setting_up_a_return_value_for_a_virtual_property_on_a_class_with_a_public_getter_and_private_setter()
+            public when_setting_up_a_return_value_for_a_virtual_property_on_a_class_with_a_public_getter_and_private_setter()
             {
                 target = MockRepository.Mock<VirtualClass>();
+                target.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
                 target.Stub(entry_model => entry_model.virtual_property_public_read_private_write).Return(DateTime.Now);
             }
 

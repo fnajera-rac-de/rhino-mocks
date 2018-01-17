@@ -28,16 +28,13 @@
 
 
 using System;
-using System.IO;
-using System.Reflection;
-using Xunit;
 using Rhino.Mocks.Exceptions;
-using Rhino.Mocks.Interfaces;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
     public delegate object ObjectDelegateWithNoParams();
-        
+
     public class MockingDelegatesTests
     {
         private delegate object ObjectDelegateWithNoParams();
@@ -45,7 +42,7 @@ namespace Rhino.Mocks.Tests
         private delegate string StringDelegateWithParams(int a, string b);
         private delegate int IntDelegateWithRefAndOutParams(ref int a, out string b);
 
-		public MockingDelegatesTests()
+        public MockingDelegatesTests()
         {
         }
 
@@ -53,10 +50,11 @@ namespace Rhino.Mocks.Tests
         public void CallingMockedDelegatesWithoutOn()
         {
             ObjectDelegateWithNoParams d1 = MockRepository.Mock<ObjectDelegateWithNoParams>();
+            d1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d1.Expect(x => x())
                 .Return(1);
-            
+
             Assert.Equal(1, d1());
         }
 
@@ -64,8 +62,10 @@ namespace Rhino.Mocks.Tests
         public void MockTwoDelegatesWithTheSameName()
         {
             ObjectDelegateWithNoParams d1 = MockRepository.Mock<ObjectDelegateWithNoParams>();
+            d1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Tests.ObjectDelegateWithNoParams d2 = MockRepository.Mock<Tests.ObjectDelegateWithNoParams>();
+            d2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d1.Expect(x => x())
                 .Return(1);
@@ -84,6 +84,7 @@ namespace Rhino.Mocks.Tests
         public void MockObjectDelegateWithNoParams()
         {
             ObjectDelegateWithNoParams d = MockRepository.Mock<ObjectDelegateWithNoParams>();
+            d.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d.Expect(x => x())
                 .Return("abc");
@@ -103,6 +104,7 @@ namespace Rhino.Mocks.Tests
         public void MockVoidDelegateWithNoParams()
         {
             VoidDelegateWithParams d = MockRepository.Mock<VoidDelegateWithParams>();
+            d.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d.Expect(x => x("abc"));
             d.Expect(x => x("efg"));
@@ -119,6 +121,7 @@ namespace Rhino.Mocks.Tests
         public void MockStringDelegateWithParams()
         {
             StringDelegateWithParams d = MockRepository.Mock<StringDelegateWithParams>();
+            d.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             d.Expect(x => x(1, "111"))
                 .Return("abc");
@@ -145,6 +148,7 @@ namespace Rhino.Mocks.Tests
         public void GenericDelegate()
         {
             Action<int> action = MockRepository.Mock<Action<int>>();
+            action.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             action.Expect(x =>
             {

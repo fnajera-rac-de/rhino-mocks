@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -11,9 +8,10 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         private ISearchPatternBuilder _searchPatternBuilder;
         private ImageFinder _imageFinder;
 
-		public FieldProblem_Wendy()
+        public FieldProblem_Wendy()
         {
             _searchPatternBuilder = MockRepository.Mock<ISearchPatternBuilder>();
+            _searchPatternBuilder.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             _imageFinder = new ImageFinder(_searchPatternBuilder);
         }
 
@@ -24,28 +22,28 @@ namespace Rhino.Mocks.Tests.FieldsProblem
                 .Return(null);
 
             _imageFinder.FindImagePath();
-        	Assert.Throws<ExpectationViolationException>(
-        		() => Verify(_searchPatternBuilder));
+            Assert.Throws<ExpectationViolationException>(
+                () => Verify(_searchPatternBuilder));
         }
 
-		[Fact]
-		public void VerifyShouldFailIfDynamicMockWasCalledWithRepeatNever()
-		{
+        [Fact]
+        public void VerifyShouldFailIfDynamicMockWasCalledWithRepeatNever()
+        {
             _searchPatternBuilder.Expect(x => x.CreateFromExtensions())
                 .Repeat.Never();
 
-			try
-			{
-				_searchPatternBuilder.CreateFromExtensions();
-			}
-			catch 
-			{
-				
-			}
+            try
+            {
+                _searchPatternBuilder.CreateFromExtensions();
+            }
+            catch
+            {
 
-			Assert.Throws<ExpectationViolationException>(
-				() => Verify(_searchPatternBuilder));
-		}
+            }
+
+            Assert.Throws<ExpectationViolationException>(
+                () => Verify(_searchPatternBuilder));
+        }
 
         private void Verify(ISearchPatternBuilder builder)
         {

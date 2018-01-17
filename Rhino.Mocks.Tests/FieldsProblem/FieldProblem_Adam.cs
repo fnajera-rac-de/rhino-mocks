@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
@@ -16,9 +15,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void ShouldRaiseEventWhenEverPropIsSet()
         {
             var foo = MockRepository.Mock<IFoo>();
-
+            foo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             foo.Stub(x => x.Str = Arg<string>.Is.Anything)
-                .WhenCalled(() => foo.Raise(y => y.Event += null, 
+                .WhenCalled(() => foo.Raise(y => y.Event += null,
                     new object[] { foo, EventArgs.Empty }));
 
             int calls = 0;

@@ -15,6 +15,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void TestSampleMatrixChanged()
         {
             var mockTestClass = MockRepository.Mock<ClassToMock>();
+            mockTestClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             var fireChangeTestProperty = mockTestClass
                 .ExpectEvent(x => x.ChangeTestProperty += null)
@@ -23,7 +24,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             new ClassRaisingException(mockTestClass);
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => mockTestClass.Raise(x => x.ChangeTestProperty += null, 
+                () => mockTestClass.Raise(x => x.ChangeTestProperty += null,
                     new object[] { true }));
         }
     }

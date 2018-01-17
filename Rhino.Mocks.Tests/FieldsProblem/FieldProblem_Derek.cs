@@ -32,31 +32,32 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Derek : IDisposable
-	{
+    public class FieldProblem_Derek : IDisposable
+    {
         private IMockInterface mockedInterface;
 
-		public FieldProblem_Derek()
-		{
+        public FieldProblem_Derek()
+        {
             mockedInterface = MockRepository.Mock<IMockInterface>();
-		}
-        
-		public void Dispose()
-		{
+            mockedInterface.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
+
+        public void Dispose()
+        {
             mockedInterface.VerifyExpectations(true);
-		}
-        
-		[Fact]
-		public void TestInvalidValue()
-		{
+        }
+
+        [Fact]
+        public void TestInvalidValue()
+        {
             mockedInterface.Expect(x => x.InvalidValue)
                 .Return(100UL);
 
-			Assert.Equal(100UL, mockedInterface.InvalidValue);
-		}
-	}
+            Assert.Equal(100UL, mockedInterface.InvalidValue);
+        }
+    }
 
-	public interface IMockInterface
+    public interface IMockInterface
     {
         UInt64 InvalidValue { get; }
     }

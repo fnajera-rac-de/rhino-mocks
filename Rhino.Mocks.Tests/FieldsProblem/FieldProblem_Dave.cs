@@ -10,6 +10,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         {
             // IFormatProvider was the first thing that popped up, the type really doesn't matter here
             var mock = MockRepository.Mock<IFormatProvider>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             // two calls to the same method
             mock.GetFormat(typeof(string));
@@ -26,6 +27,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         {
             // IFormatProvider was the first thing that popped up, the type really doesn't matter here
             var mock = MockRepository.Mock<IFormatProvider>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             // two calls to the same method
             mock.GetFormat(typeof(string));

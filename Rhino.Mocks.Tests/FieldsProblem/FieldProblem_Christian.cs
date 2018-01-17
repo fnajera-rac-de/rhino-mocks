@@ -8,6 +8,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void PropertiesWillBehaveLikeProperties()
         {
             TestObject testObject = MockRepository.Mock<TestObject>();
+            testObject.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.Equal(0, testObject.IntProperty);
         }

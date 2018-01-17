@@ -14,6 +14,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void Can_Create_Two_Expectations_With_No_Exception()
         {
             var myMock = MockRepository.Mock<IFuncTest>();
+            myMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myMock.Expect(x => x.Generate(42))
                 .Return(() => 6);

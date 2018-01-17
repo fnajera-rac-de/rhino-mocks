@@ -27,72 +27,75 @@
 #endregion
 
 
-using System;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Kythorn
-	{
-		// back to record unit test has been removed
+    public class FieldProblem_Kythorn
+    {
+        // back to record unit test has been removed
 
-		[Fact]
-		public void CanUseStubSyntaxOnMocksInRecordMode()
-		{
-			var service = MockRepository.Mock<IService>();
-            var view = MockRepository.Mock<IView>();
-
-			service.Stub(x => x.GetString())
-                .Return("Test");
-
-			var presenter = new Presenter(view, service);
-			presenter.OnViewLoaded();
-
-			view.AssertWasCalled(x => x.Message = "Test");
-		}
-
-		[Fact]
-		public void Success()
-		{
+        [Fact]
+        public void CanUseStubSyntaxOnMocksInRecordMode()
+        {
             var service = MockRepository.Mock<IService>();
+            service.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var view = MockRepository.Mock<IView>();
+            view.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			service.Stub(x => x.GetString())
+            service.Stub(x => x.GetString())
                 .Return("Test");
 
-			view.Expect(x => x.Message = "Test");
+            var presenter = new Presenter(view, service);
+            presenter.OnViewLoaded();
 
-			var presenter = new Presenter(view, service);
-			presenter.OnViewLoaded();
+            view.AssertWasCalled(x => x.Message = "Test");
+        }
 
-			view.VerifyAllExpectations();
-		}
+        [Fact]
+        public void Success()
+        {
+            var service = MockRepository.Mock<IService>();
+            service.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            var view = MockRepository.Mock<IView>();
+            view.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-		public interface IService
-		{
-			string GetString();
-		}
+            service.Stub(x => x.GetString())
+                .Return("Test");
 
-		public interface IView
-		{
-			string Message { set; }
-		}
-		public class Presenter
-		{
-			private readonly IService service;
-			private readonly IView view;
+            view.Expect(x => x.Message = "Test");
 
-			public Presenter(IView view, IService service)
-			{
-				this.view = view;
-				this.service = service;
-			}
+            var presenter = new Presenter(view, service);
+            presenter.OnViewLoaded();
+
+            view.VerifyAllExpectations();
+        }
+
+        public interface IService
+        {
+            string GetString();
+        }
+
+        public interface IView
+        {
+            string Message { set; }
+        }
+        public class Presenter
+        {
+            private readonly IService service;
+            private readonly IView view;
+
+            public Presenter(IView view, IService service)
+            {
+                this.view = view;
+                this.service = service;
+            }
 
 
-			public void OnViewLoaded()
-			{
-				view.Message = service.GetString();
-			}
-		}
-	}	
+            public void OnViewLoaded()
+            {
+                view.Message = service.GetString();
+            }
+        }
+    }
 }

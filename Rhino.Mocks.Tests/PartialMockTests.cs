@@ -28,10 +28,8 @@
 
 
 using System;
-using System.Text;
-using System.Windows.Forms;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
@@ -39,19 +37,20 @@ namespace Rhino.Mocks.Tests
     {
         AbstractClass abs;
 
-		public PartialMockTests()
+        public PartialMockTests()
         {
             abs = MockRepository.Partial<AbstractClass>();
+            abs.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
-		public void AutomaticallCallBaseMethodIfNoExpectationWasSet() 
-	    {
+        public void AutomaticallCallBaseMethodIfNoExpectationWasSet()
+        {
             Assert.Equal(1, abs.Increment());
-			Assert.Equal(6, abs.Add(5));
-			Assert.Equal(6, abs.Count);
+            Assert.Equal(6, abs.Add(5));
+            Assert.Equal(6, abs.Count);
             abs.VerifyAllExpectations();
-	    }
+        }
 
         [Fact]
         public void CanMockVirtualMethods()
@@ -63,8 +62,8 @@ namespace Rhino.Mocks.Tests
                 .Return(3);
 
             Assert.Equal(5, abs.Increment());
-			Assert.Equal(3, abs.Add(2));
-			Assert.Equal(0, abs.Count);
+            Assert.Equal(3, abs.Add(2));
+            Assert.Equal(0, abs.Count);
             abs.VerifyAllExpectations();
         }
 
@@ -95,19 +94,20 @@ namespace Rhino.Mocks.Tests
                 () => abs.VerifyExpectations(true));
         }
 
-    	[Fact]
-    	public void CanMockWithCtorParams()
-    	{
+        [Fact]
+        public void CanMockWithCtorParams()
+        {
             WithParameters withParameters = MockRepository.Partial<WithParameters>(1);
+            withParameters.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             withParameters.Expect(x => x.Int)
                 .Return(4);
 
-    		Assert.Equal(4, withParameters.Int);
+            Assert.Equal(4, withParameters.Int);
             withParameters.VerifyAllExpectations();
-    	}
+        }
     }
-    
+
     public abstract class AbstractClass
     {
         public int Count = 0;
@@ -118,28 +118,28 @@ namespace Rhino.Mocks.Tests
         }
 
         public virtual int Add(int n)
-		{
-			return Count += n;
-		}
+        {
+            return Count += n;
+        }
 
         public abstract int Decrement();
     }
 
-	public class WithParameters
-	{
-		private int i;
+    public class WithParameters
+    {
+        private int i;
 
 
-		public WithParameters(int i)
-		{
-			this.i = i;
-		}
+        public WithParameters(int i)
+        {
+            this.i = i;
+        }
 
 
-		public virtual int Int
-		{
-			get { return i; }
-			set { i = value; }
-		}
-	}
+        public virtual int Int
+        {
+            get { return i; }
+            set { i = value; }
+        }
+    }
 }

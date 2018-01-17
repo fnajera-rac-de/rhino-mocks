@@ -13,7 +13,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void Method1_CallWithMocks_Returns10()
         {
             int result = Problem.Method1();
-            
+
             Assert.Equal(10, result);
         }
 
@@ -22,8 +22,11 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             get
             {
                 if (_daoFactory == null)
+                {
                     _daoFactory = MockRepository.Mock<IDaoFactory>();
-                
+                    _daoFactory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+                }
+
                 return _daoFactory;
             }
         }
@@ -33,19 +36,22 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             get
             {
                 if (_blFactory == null)
+                {
                     _blFactory = MockRepository.Mock<IBLFactory>();
-                
+                    _blFactory.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+                }
+
                 return _blFactory;
             }
         }
-        
+
         public IProblem Problem
         {
             get
             {
                 if (_problem == null)
                     _problem = new Problem(BLFactoryMock, DaoFactoryMock);
-                
+
                 return _problem;
             }
 

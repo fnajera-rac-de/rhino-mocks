@@ -27,10 +27,8 @@
 #endregion
 
 
-using System;
-using System.Text;
-using Xunit;
 using Rhino.Mocks.Constraints;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -40,6 +38,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void CreateClassWithDefaultCtor()
         {
             ClassWithDefaultCtor cwdc = MockRepository.Partial<ClassWithDefaultCtor>();
+            cwdc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(cwdc);
         }
 
@@ -52,7 +51,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public class ClassWithDefaultCtor
         {
             public ClassWithDefaultCtor()
-            {}
+            { }
         }
     }
 }

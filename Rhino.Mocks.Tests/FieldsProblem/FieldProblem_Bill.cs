@@ -1,5 +1,5 @@
-﻿using Xunit;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -13,6 +13,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void Should_be_able_to_proxy_IUnityContainer()
         {
             var unity = MockRepository.Mock<IUnityContainer>();
+            unity.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
     }
 }

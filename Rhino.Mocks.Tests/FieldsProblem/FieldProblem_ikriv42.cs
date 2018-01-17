@@ -12,11 +12,11 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             }
         }
 
-       [Fact]
-       public void GenerateMock_Works_With_MarshalByRef()
-       {
-           MockRepository.Mock<D>();
-       }
+        [Fact]
+        public void GenerateMock_Works_With_MarshalByRef()
+        {
+            MockRepository.Mock<D>();
+        }
 
         [Fact]
         public void GenerateStub_Works_With_MarshalByRef()

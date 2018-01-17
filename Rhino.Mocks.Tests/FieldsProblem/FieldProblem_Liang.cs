@@ -29,97 +29,98 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public interface IView
-	{
-		event EventHandler Init;
-		event EventHandler Load;
-		bool IsPostBack { get; }
-		void DataBind();
-		bool IsValid { get; }
-		void Alert(string message);
-	}
+    public interface IView
+    {
+        event EventHandler Init;
+        event EventHandler Load;
+        bool IsPostBack { get; }
+        void DataBind();
+        bool IsValid { get; }
+        void Alert(string message);
+    }
 
-	public interface IPresenter<IView>
-	{
-		void Initialize();
-		void Load();
-	}
+    public interface IPresenter<IView>
+    {
+        void Initialize();
+        void Load();
+    }
 
-	public abstract class PresenterBase<TView> : IPresenter<IView>
-		where TView : IView
-	{
-		protected TView view;
+    public abstract class PresenterBase<TView> : IPresenter<IView>
+        where TView : IView
+    {
+        protected TView view;
 
-		public PresenterBase()
-		{
-		}
+        public PresenterBase()
+        {
+        }
 
-		public PresenterBase(TView view)
-		{
-			this.view = view;
-			view.Init += new EventHandler(OnViewInit);
-			view.Load += new EventHandler(OnViewLoad);
-		}
+        public PresenterBase(TView view)
+        {
+            this.view = view;
+            view.Init += new EventHandler(OnViewInit);
+            view.Load += new EventHandler(OnViewLoad);
+        }
 
 
-		protected void OnViewInit(object sender, EventArgs e)
-		{
-			Initialize();
-		}
+        protected void OnViewInit(object sender, EventArgs e)
+        {
+            Initialize();
+        }
 
-		protected void OnViewLoad(object sender, EventArgs e)
-		{
-			if (!view.IsPostBack)
-			{
-				Load();
-			}
-		}
+        protected void OnViewLoad(object sender, EventArgs e)
+        {
+            if (!view.IsPostBack)
+            {
+                Load();
+            }
+        }
 
-		public virtual void Initialize()
-		{
-		}
+        public virtual void Initialize()
+        {
+        }
 
-		public virtual void Load()
-		{
-		}
-	}
+        public virtual void Load()
+        {
+        }
+    }
 
-	
-	public class PresenterBaseTestFixture  : IDisposable
-	{
-		private IView viewMocks;
 
-		public PresenterBaseTestFixture()
-		{
+    public class PresenterBaseTestFixture : IDisposable
+    {
+        private IView viewMocks;
+
+        public PresenterBaseTestFixture()
+        {
             viewMocks = MockRepository.Mock<IView>();
-		}
+            viewMocks.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		public void Dispose()
-		{
+        public void Dispose()
+        {
             viewMocks.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void TestEventInitialization()
-		{
-			viewMocks.ExpectEvent(x => x.Init += null)
+        [Fact]
+        public void TestEventInitialization()
+        {
+            viewMocks.ExpectEvent(x => x.Init += null)
                 .IgnoreArguments();
 
-			viewMocks.Load += null; //also set expectation
+            viewMocks.Load += null; //also set expectation
             viewMocks.ExpectEvent(x => x.Load += null)
                 .IgnoreArguments();
 
             PresenterBase<IView> presenterBase = MockRepository.Mock<PresenterBase<IView>>(viewMocks);
+            presenterBase.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             presenterBase.Expect(x => x.Initialize());
             presenterBase.Expect(x => x.Load());
 
             viewMocks.Raise(x => x.Init += null, EventArgs.Empty);
             viewMocks.Raise(x => x.Load += null, EventArgs.Empty);
-		}
-	}
+        }
+    }
 }

@@ -29,54 +29,56 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Xunit;
 using MSHTML;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Luke
-	{
-		[Fact]
-		public void CanMockIE()
-		{
-			IHTMLEventObj2 mock = MockRepository.Mock<IHTMLEventObj2>();
-			Assert.NotNull(mock);
-		}
+    public class FieldProblem_Luke
+    {
+        [Fact]
+        public void CanMockIE()
+        {
+            IHTMLEventObj2 mock = MockRepository.Mock<IHTMLEventObj2>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            Assert.NotNull(mock);
+        }
 
-		[Fact]
-		public void CanMockComInterface()
-		{
-			IServiceProvider serviceProvider = MockRepository.Mock<IServiceProvider, IHTMLDataTransfer>();
+        [Fact]
+        public void CanMockComInterface()
+        {
+            IServiceProvider serviceProvider = MockRepository.Mock<IServiceProvider, IHTMLDataTransfer>();
+            serviceProvider.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(serviceProvider);
-		}
+        }
 
-		[Fact] 
-		public void TryToMockClassWithProtectedInternalAbstractClass()
-		{
-			MockRepository.Mock<SomeClassWithProtectedInternalAbstractClass>();
-		}
+        [Fact]
+        public void TryToMockClassWithProtectedInternalAbstractClass()
+        {
+            MockRepository.Mock<SomeClassWithProtectedInternalAbstractClass>();
+        }
 
-		[Fact] 
-		public void TryToMockClassWithProtectedAbstractClass()
-		{
+        [Fact]
+        public void TryToMockClassWithProtectedAbstractClass()
+        {
             MockRepository.Mock<SomeClassWithProtectedAbstractClass>();
-		}
+        }
 
-		public abstract class SomeClassWithProtectedInternalAbstractClass
-		{
-			protected internal abstract void Quack();
-		}
+        public abstract class SomeClassWithProtectedInternalAbstractClass
+        {
+            protected internal abstract void Quack();
+        }
 
-		public abstract class SomeClassWithProtectedAbstractClass
-		{
-			protected abstract void Quack();
-		}
-	}
+        public abstract class SomeClassWithProtectedAbstractClass
+        {
+            protected abstract void Quack();
+        }
+    }
 
-	[ComImport, Guid("6D5140C1-7436-11CE-8034-00AA006009FA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IServiceProvider
-	{
-		[return: MarshalAs(UnmanagedType.IUnknown)]
-		object QueryService([In] ref Guid guidService, [In] ref Guid riid);
-	}
+    [ComImport, Guid("6D5140C1-7436-11CE-8034-00AA006009FA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IServiceProvider
+    {
+        [return: MarshalAs(UnmanagedType.IUnknown)]
+        object QueryService([In] ref Guid guidService, [In] ref Guid riid);
+    }
 }

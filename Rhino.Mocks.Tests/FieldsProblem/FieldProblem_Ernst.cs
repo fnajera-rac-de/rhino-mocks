@@ -29,53 +29,52 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Constraints;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Ernst
-	{
-		[Fact]
-		public void CallOriginalMethodProblem2()
-		{
-			MockedClass mock = MockRepository.Mock<MockedClass>();
+    public class FieldProblem_Ernst
+    {
+        [Fact]
+        public void CallOriginalMethodProblem2()
+        {
+            MockedClass mock = MockRepository.Mock<MockedClass>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.Method(Arg.Is("parameter")))
                 .CallOriginalMethod();
 
-			mock.Method("parameter");
+            mock.Method("parameter");
 
             mock.VerifyAllExpectations();
-		}
+        }
 
         // back to record unit tests have been removed
-	}
+    }
 
-	public class TestClass
-	{
-		private int id;
+    public class TestClass
+    {
+        private int id;
 
 
-		public virtual int Id
-		{
-			get { return id; }
-			set { id = value; }
-		}
+        public virtual int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
 
-		public virtual void Method()
-		{
-		}
-	}
+        public virtual void Method()
+        {
+        }
+    }
 
-	public class MockedClass
-	{
-		public virtual void Method(string parameter)
-		{
-			if (parameter == null)
-				throw new ArgumentNullException();
+    public class MockedClass
+    {
+        public virtual void Method(string parameter)
+        {
+            if (parameter == null)
+                throw new ArgumentNullException();
 
-			//Something in this method must be executed
-		}
-	}
+            //Something in this method must be executed
+        }
+    }
 }

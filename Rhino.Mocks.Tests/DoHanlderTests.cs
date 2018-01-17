@@ -28,7 +28,6 @@
 
 
 using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests
@@ -42,9 +41,10 @@ namespace Rhino.Mocks.Tests
 
         delegate string NameSourceDelegate(string first, string suranme);
 
-		public DoHanlderTests()
+        public DoHanlderTests()
         {
             demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
@@ -62,18 +62,19 @@ namespace Rhino.Mocks.Tests
         public void SayHelloWorld()
         {
             INameSource nameSource = MockRepository.Mock<INameSource>();
+            nameSource.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             nameSource.Expect(x => x.CreateName(null, null))
                 .IgnoreArguments()
                 .DoInstead(new NameSourceDelegate(Formal));
-            
+
             string expected = "Hi, my name is Ayende Rahien";
             string actual = new Speaker("Ayende", "Rahien", nameSource)
                 .Introduce();
 
             Assert.Equal(expected, actual);
         }
-        
+
         [Fact]
         public void CanThrow()
         {
@@ -95,15 +96,15 @@ namespace Rhino.Mocks.Tests
         [Fact]
         public void InvalidReturnValueThrows()
         {
-        	Assert.Throws<InvalidOperationException>(
-        		() => demo.Expect(x => x.ReturnIntNoArgs())
+            Assert.Throws<InvalidOperationException>(
+                () => demo.Expect(x => x.ReturnIntNoArgs())
                     .DoInstead(new GetDay(GetSunday)));
         }
 
         [Fact]
         public void InvalidDelegateThrows()
         {
-        	Assert.Throws<InvalidOperationException>(
+            Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.ReturnIntNoArgs())
                     .DoInstead(new IntDelegate(IntMethod)));
         }
@@ -126,7 +127,7 @@ namespace Rhino.Mocks.Tests
         {
             throw new ArgumentException("Not a day");
         }
-        
+
         private int IntMethod(int i)
         {
             return i;

@@ -34,66 +34,66 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.Utilities
 {
-	public class MethodCallTests
-	{
-		[Fact]
-		public void MethodCallToString()
-		{
+    public class MethodCallTests
+    {
+        [Fact]
+        public void MethodCallToString()
+        {
             string actual = MethodFormatter.ToString(null, GetMethodInfo("StartsWith", ""), new object[] { "abcd" });
             Assert.Equal("String.StartsWith(\"abcd\");", actual);
-		}
+        }
 
-		[Fact]
-		public void MethodCallToStringWithSeveralArguments()
-		{
+        [Fact]
+        public void MethodCallToStringWithSeveralArguments()
+        {
             string actual = MethodFormatter.ToString(null, GetMethodInfo("IndexOf", "abcd", 4), new object[] { "abcd", 4 });
-			Assert.Equal("String.IndexOf(\"abcd\", 4);", actual);
-		}
+            Assert.Equal("String.IndexOf(\"abcd\", 4);", actual);
+        }
 
-		[Fact]
-		public void MethodCallCtorWontAcceptNullMethod()
-		{
+        [Fact]
+        public void MethodCallCtorWontAcceptNullMethod()
+        {
             Assert.Throws<ArgumentNullException>(
                 () => MethodFormatter.ToString(null, null));
-		}
+        }
 
-		[Fact]
-		public void MethodCallCtorWontAcceptNullArgs()
-		{
+        [Fact]
+        public void MethodCallCtorWontAcceptNullArgs()
+        {
             MethodInfo method = typeof(string)
                 .GetMethod("StartsWith", new Type[] { typeof(string) });
 
             Assert.Throws<ArgumentNullException>(
                 () => MethodFormatter.ToString(null, method, null, null));
-		}
+        }
 
-		[Fact]
-		public void MethodCallWithArgumentsMissing()
-		{
+        [Fact]
+        public void MethodCallWithArgumentsMissing()
+        {
             MethodInfo method = typeof(string)
                 .GetMethod("StartsWith", new Type[] { typeof(string) });
 
             Assert.Equal(
-                "String.StartsWith(missing parameter);", 
+                "String.StartsWith(missing parameter);",
                 MethodFormatter.ToString(null, method, new object[0]));
 
-		}
+        }
 
-		private static Type[] TypesFromArgs(object[] args)
-		{
-			Type[] types = new Type[args.Length];
-			for (int i = 0; i < args.Length; i++)
-			{
-				types[i] = args[i].GetType();
-			}
-			return types;
-		}
+        private static Type[] TypesFromArgs(object[] args)
+        {
+            Type[] types = new Type[args.Length];
+            for (int i = 0; i < args.Length; i++)
+            {
+                types[i] = args[i].GetType();
+            }
+            return types;
+        }
 
-		public static MethodInfo GetMethodInfo(string name, params object[] args)
-		{
-			Type[] types = TypesFromArgs(args);
-			MethodInfo method = typeof (string).GetMethod(name, types);
-			return method;
-		}
-	}
+        public static MethodInfo GetMethodInfo(string name, params object[] args)
+        {
+            Type[] types = TypesFromArgs(args);
+            MethodInfo method = typeof(string).GetMethod(name, types);
+            return method;
+        }
+    }
 }

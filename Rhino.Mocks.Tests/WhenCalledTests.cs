@@ -3,54 +3,57 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	
-	public class WhenCalledTests
-	{
-		[Fact]
-		public void Shortcut_to_arg_is_equal()
-		{
-			// minor hack to get this to work reliably, we reset the arg manager,
-			// and restore on in the MockRepository ctor, so we do it this way
-			new MockRepository();
-			Assert.Equal(Arg.Is(1), Arg<int>.Is.Equal(1));
-		}
 
-		[Fact]
-		public void Can_use_when_called_to_exceute_code_when_exceptation_is_matched_without_stupid_delegate_sig_overhead()
-		{
-			var wasCalled = false;
-			var stub = MockRepository.Mock<IDemo>();
+    public class WhenCalledTests
+    {
+        [Fact]
+        public void Shortcut_to_arg_is_equal()
+        {
+            // minor hack to get this to work reliably, we reset the arg manager,
+            // and restore on in the MockRepository ctor, so we do it this way
+            new MockRepository();
+            Assert.Equal(Arg.Is(1), Arg<int>.Is.Equal(1));
+        }
 
-			stub.Stub(x => x.StringArgString(Arg.Is("")))
-				.Return("blah")
-				.WhenCalled(delegate { wasCalled = true; });
+        [Fact]
+        public void Can_use_when_called_to_exceute_code_when_exceptation_is_matched_without_stupid_delegate_sig_overhead()
+        {
+            var wasCalled = false;
+            var stub = MockRepository.Mock<IDemo>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			Assert.Equal("blah", stub.StringArgString(""));
-			Assert.True(wasCalled);
-		}
+            stub.Stub(x => x.StringArgString(Arg.Is("")))
+                .Return("blah")
+                .WhenCalled(delegate { wasCalled = true; });
 
-		[Fact]
-		public void Can_modify_return_value()
-		{
-			var stub = MockRepository.Mock<IDemo>();
-			stub.Stub(x => x.StringArgString(Arg.Is("")))
-				.Return("blah")
-				.Intercept(x => x.ReturnValue = "arg");
+            Assert.Equal("blah", stub.StringArgString(""));
+            Assert.True(wasCalled);
+        }
 
-			Assert.Equal("arg", stub.StringArgString(""));
-		}
+        [Fact]
+        public void Can_modify_return_value()
+        {
+            var stub = MockRepository.Mock<IDemo>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            stub.Stub(x => x.StringArgString(Arg.Is("")))
+                .Return("blah")
+                .Intercept(x => x.ReturnValue = "arg");
 
-		[Fact]
-		public void Can_inspect_method_arguments()
-		{
-			var stub = MockRepository.Mock<IDemo>();
+            Assert.Equal("arg", stub.StringArgString(""));
+        }
 
-			stub.Stub(x => x.StringArgString(null))
-				.IgnoreArguments()
-				.Return("blah")
+        [Fact]
+        public void Can_inspect_method_arguments()
+        {
+            var stub = MockRepository.Mock<IDemo>();
+            stub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
+            stub.Stub(x => x.StringArgString(null))
+                .IgnoreArguments()
+                .Return("blah")
                 .Intercept(x => Assert.Equal("foo", x.Arguments[0]));
 
-			Assert.Equal("blah", stub.StringArgString("foo"));
-		}
-	}
+            Assert.Equal("blah", stub.StringArgString("foo"));
+        }
+    }
 }

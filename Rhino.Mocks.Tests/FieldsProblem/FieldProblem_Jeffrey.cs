@@ -28,54 +28,55 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	
-	public class FieldProblem_Jeffrey
-	{
-		[Fact]
-		public void DelegateToGenericMock()
-		{
-			IEMailFormatter<string> formatterMock = MockRepository.Mock<IEMailFormatter<string>>();
-			SmtpEMailSenderBase<string> senderMock = MockRepository.Mock<SmtpEMailSenderBase<string>>();
+
+    public class FieldProblem_Jeffrey
+    {
+        [Fact]
+        public void DelegateToGenericMock()
+        {
+            IEMailFormatter<string> formatterMock = MockRepository.Mock<IEMailFormatter<string>>();
+            formatterMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            SmtpEMailSenderBase<string> senderMock = MockRepository.Mock<SmtpEMailSenderBase<string>>();
+            senderMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             senderMock.Expect(x => x.SetFormatter(formatterMock))
-                .DoInstead((Action<IEMailFormatter<string>>)delegate(IEMailFormatter<string> formatter)
-                {
-                    Assert.NotNull(formatter);
-                });
+                .DoInstead((Action<IEMailFormatter<string>>) delegate (IEMailFormatter<string> formatter)
+                 {
+                     Assert.NotNull(formatter);
+                 });
 
             senderMock.SetFormatter(formatterMock);
             senderMock.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void Invalid_DelegateToGenericMock()
-		{
+        [Fact]
+        public void Invalid_DelegateToGenericMock()
+        {
             IEMailFormatter<string> formatterMock = MockRepository.Mock<IEMailFormatter<string>>();
+            formatterMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             SmtpEMailSenderBase<string> senderMock = MockRepository.Mock<SmtpEMailSenderBase<string>>();
-            
-			Assert.Throws<InvalidOperationException>(
+            senderMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
+            Assert.Throws<InvalidOperationException>(
                 () => senderMock.Expect(x => x.SetFormatter(formatterMock))
-                    .DoInstead((Action<IEMailFormatter<int>>)delegate(IEMailFormatter<int> formatter)
-                    {
-                        Assert.NotNull(formatter);
-                    }));
-		}
-	}
+                    .DoInstead((Action<IEMailFormatter<int>>) delegate (IEMailFormatter<int> formatter)
+                     {
+                         Assert.NotNull(formatter);
+                     }));
+        }
+    }
 
-	public interface IEMailFormatter<T>
-	{
-	}
-
-	public abstract class SmtpEMailSenderBase<T>
+    public interface IEMailFormatter<T>
     {
-		public virtual void SetFormatter(IEMailFormatter<T> formatter)
+    }
+
+    public abstract class SmtpEMailSenderBase<T>
+    {
+        public virtual void SetFormatter(IEMailFormatter<T> formatter)
         {
         }
     }

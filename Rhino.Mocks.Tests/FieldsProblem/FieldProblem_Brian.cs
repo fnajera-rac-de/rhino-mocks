@@ -27,22 +27,20 @@
 #endregion
 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	
-	public class FieldProblem_Brian
-	{
-		[Fact]
-		public void SetExpectationOnNullableValue()
-		{
-			IFoo foo = MockRepository.Mock<IFoo>();
 
-			int? id = 2;
+    public class FieldProblem_Brian
+    {
+        [Fact]
+        public void SetExpectationOnNullableValue()
+        {
+            IFoo foo = MockRepository.Mock<IFoo>();
+            foo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
+            int? id = 2;
 
             foo.Expect(x => x.Id)
                 .Return(id)
@@ -54,24 +52,25 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             foo.Expect(x => x.Id)
                 .Return(1);
 
-			Assert.True(foo.Id.HasValue);
-			Assert.Equal(2, foo.Id.Value);
-			Assert.False(foo.Id.HasValue);
-			Assert.Equal(1, foo.Id.Value);
+            Assert.True(foo.Id.HasValue);
+            Assert.Equal(2, foo.Id.Value);
+            Assert.False(foo.Id.HasValue);
+            Assert.Equal(1, foo.Id.Value);
 
             foo.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void MockingInternalMetohdsAndPropertiesOfInternalClass()
-		{
-			
-			TestClass testClass = new TestClass();
+        [Fact]
+        public void MockingInternalMetohdsAndPropertiesOfInternalClass()
+        {
 
-			string testMethod = testClass.TestMethod();
-			string testProperty = testClass.TestProperty;
+            TestClass testClass = new TestClass();
 
-			TestClass mockTestClass = MockRepository.Mock<TestClass>();
+            string testMethod = testClass.TestMethod();
+            string testProperty = testClass.TestProperty;
+
+            TestClass mockTestClass = MockRepository.Mock<TestClass>();
+            mockTestClass.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockTestClass.Expect(x => x.TestMethod())
                 .Return("MockTestMethod");
@@ -79,28 +78,28 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             mockTestClass.Expect(x => x.TestProperty)
                 .Return("MockTestProperty");
 
-			Assert.Equal("MockTestMethod", mockTestClass.TestMethod());
-			Assert.Equal("MockTestProperty", mockTestClass.TestProperty);
+            Assert.Equal("MockTestMethod", mockTestClass.TestMethod());
+            Assert.Equal("MockTestProperty", mockTestClass.TestProperty);
 
             mockTestClass.VerifyExpectations(true);
-		}
+        }
 
-		public interface IFoo
-		{
-			int? Id { get;}
-		}
+        public interface IFoo
+        {
+            int? Id { get; }
+        }
 
-		internal class TestClass
-		{
-			internal virtual string TestMethod()
-			{
-				return "TestMethod";
-			}
+        internal class TestClass
+        {
+            internal virtual string TestMethod()
+            {
+                return "TestMethod";
+            }
 
-			internal virtual string TestProperty
-			{
-				get { return "TestProperty"; }
-			}
-		}
-	}
+            internal virtual string TestProperty
+            {
+                get { return "TestProperty"; }
+            }
+        }
+    }
 }

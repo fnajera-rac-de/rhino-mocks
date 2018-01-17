@@ -28,19 +28,20 @@
 
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class SetupResultTests
-	{
-		private IDemo demo;
+    public class SetupResultTests
+    {
+        private IDemo demo;
 
-		public SetupResultTests()
-		{
+        public SetupResultTests()
+        {
             demo = MockRepository.Mock<IDemo>();
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
         [Fact]
         public void CanSetupResultForMethodAndIgnoreArgs()
@@ -55,51 +56,51 @@ namespace Rhino.Mocks.Tests
 
             demo.VerifyAllExpectations();
         }
-	    
-		[Fact]
-		public void CanSetupResult()
-		{
+
+        [Fact]
+        public void CanSetupResult()
+        {
             demo.Expect(x => x.Prop)
                 .Return("Ayende");
 
-			Assert.Equal("Ayende", demo.Prop);
+            Assert.Equal("Ayende", demo.Prop);
 
             demo.VerifyAllExpectations();
-		}
+        }
 
         [Fact]
-		public void SetupResultCanRepeatAsManyTimeAsItWant()
-		{
+        public void SetupResultCanRepeatAsManyTimeAsItWant()
+        {
             demo.Expect(x => x.Prop)
                 .Return("Ayende")
                 .Repeat.Any();
 
-			for (int i = 0; i < 30; i++)
-			{
-				Assert.Equal("Ayende", demo.Prop);
-			}
+            for (int i = 0; i < 30; i++)
+            {
+                Assert.Equal("Ayende", demo.Prop);
+            }
 
             demo.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void SetupResultUsingOn()
-		{
+        [Fact]
+        public void SetupResultUsingOn()
+        {
             demo.Expect(x => x.Prop)
                 .Return("Ayende")
                 .Repeat.Any();
 
-			for (int i = 0; i < 30; i++)
-			{
-				Assert.Equal("Ayende", demo.Prop);
-			}
+            for (int i = 0; i < 30; i++)
+            {
+                Assert.Equal("Ayende", demo.Prop);
+            }
 
             demo.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void SetupResultUsingOrdered()
-		{
+        [Fact]
+        public void SetupResultUsingOrdered()
+        {
             demo.Expect(x => x.Prop)
                 .Return("Ayende")
                 .Repeat.Any();
@@ -107,21 +108,21 @@ namespace Rhino.Mocks.Tests
             demo.Expect(x => x.VoidNoArgs())
                 .Repeat.Twice();
 
-			demo.VoidNoArgs();
+            demo.VoidNoArgs();
 
-			for (int i = 0; i < 30; i++)
-			{
-				Assert.Equal("Ayende", demo.Prop);
-			}
+            for (int i = 0; i < 30; i++)
+            {
+                Assert.Equal("Ayende", demo.Prop);
+            }
 
-			demo.VoidNoArgs();
+            demo.VoidNoArgs();
 
             demo.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void ExpectNever()
-		{
+        [Fact]
+        public void ExpectNever()
+        {
             demo.Expect(x => x.ReturnStringNoArgs())
                 .Repeat.Never();
 
@@ -129,17 +130,17 @@ namespace Rhino.Mocks.Tests
 
             Assert.Throws<ExpectationViolationException>(
                 () => demo.VerifyExpectations(true));
-		}
+        }
 
-		[Fact(Skip = "Test Does Not Make Sense")]
-		public void ExpectNeverSetupTwiceThrows()
-		{
+        [Fact(Skip = "Test Does Not Make Sense")]
+        public void ExpectNeverSetupTwiceThrows()
+        {
             demo.Expect(x => x.ReturnStringNoArgs())
                 .Repeat.Never();
 
             Assert.Throws<InvalidOperationException>(
                 () => demo.Expect(x => x.ReturnStringNoArgs())
                     .Repeat.Never());
-		}
-	}
+        }
+    }
 }

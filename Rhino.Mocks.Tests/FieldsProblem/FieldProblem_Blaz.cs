@@ -37,8 +37,10 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void SameNameInterface()
         {
             IDemo demo1 = MockRepository.Mock<IDemo>();
+            demo1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Other.IDemo demo2 = MockRepository.Mock<Other.IDemo>();
-            
+            demo2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             Assert.NotEqual(demo1.GetType(), demo2.GetType());
         }
     }

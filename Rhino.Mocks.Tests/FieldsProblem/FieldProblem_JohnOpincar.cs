@@ -30,31 +30,32 @@
 using System;
 using System.Globalization;
 using System.Threading;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_JohnOpincar
-	{
-		public interface IDaSchedulerView
-		{
-			DateTime DateOf { set; }
-		}
+    public class FieldProblem_JohnOpincar
+    {
+        public interface IDaSchedulerView
+        {
+            DateTime DateOf { set; }
+        }
 
-		[Fact]
-		public void CanGetExpectationExceptionFromPropertySetter()
-		{
-		    Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-			
+        [Fact]
+        public void CanGetExpectationExceptionFromPropertySetter()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
             IDaSchedulerView m_view = MockRepository.Mock<IDaSchedulerView>();
-//			DaSchedulerPresenter presenter = new DaSchedulerPresenter(m_view, new TestScheduleLoader(0)); 
+            m_view.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            //			DaSchedulerPresenter presenter = new DaSchedulerPresenter(m_view, new TestScheduleLoader(0)); 
 
             m_view.Expect(x => x.DateOf = new DateTime(2006, 8, 8));
-			
-			//presenter.Initialize(); 
+
+            //presenter.Initialize(); 
             Assert.Throws<ExpectationViolationException>(
                 () => m_view.VerifyExpectations(true));
-		}
-	}
+        }
+    }
 }

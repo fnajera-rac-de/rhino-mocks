@@ -33,70 +33,71 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	using Castle.DynamicProxy;
-	
-	public class FieldProblem_James
-	{
-		public FieldProblem_James()
-		{
-		}
+    public class FieldProblem_James
+    {
+        public FieldProblem_James()
+        {
+        }
 
-		[Fact]
-		public void ShouldBeAbleToMockGenericMethod()
-		{
+        [Fact]
+        public void ShouldBeAbleToMockGenericMethod()
+        {
             List<Foo<int>> retval = new List<Foo<int>>();
-			retval.Add(new Foo<int>());
+            retval.Add(new Foo<int>());
 
             ILookupMapper<int> mapper = MockRepository.Mock<ILookupMapper<int>>();
+            mapper.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mapper.Expect(x => x.FindAllFoo())
                 .Return(retval);
-			
-			IList<Foo<int>> listOfFoo = mapper.FindAllFoo();
-            mapper.VerifyExpectations(true);
-		}
 
-		[Fact]
-		public void ShouldBeAbleToMockGenericMethod2()
-		{
+            IList<Foo<int>> listOfFoo = mapper.FindAllFoo();
+            mapper.VerifyExpectations(true);
+        }
+
+        [Fact]
+        public void ShouldBeAbleToMockGenericMethod2()
+        {
             Foo<int> retval = new Foo<int>();
 
             ILookupMapper<int> mapper = MockRepository.Mock<ILookupMapper<int>>();
+            mapper.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mapper.Expect(x => x.FindOneFoo())
                 .Return(retval);
 
-			Foo<int> oneFoo = mapper.FindOneFoo();
+            Foo<int> oneFoo = mapper.FindOneFoo();
             mapper.VerifyExpectations(true);
-		}
+        }
 
-		[Fact]
-		public void CanMockMethodsReturnIntPtr()
-		{
+        [Fact]
+        public void CanMockMethodsReturnIntPtr()
+        {
             IFooWithIntPtr mock = MockRepository.Mock<IFooWithIntPtr>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.Buffer(15))
                 .Return(IntPtr.Zero);
 
             IntPtr buffer = mock.Buffer(15);
-			Assert.Equal(IntPtr.Zero, buffer);
-		}
-	}
+            Assert.Equal(IntPtr.Zero, buffer);
+        }
+    }
 
-	public interface ILookupMapper<T>
-	{
-		IList<Foo<T>> FindAllFoo();
-		Foo<T> FindOneFoo();
-	}
+    public interface ILookupMapper<T>
+    {
+        IList<Foo<T>> FindAllFoo();
+        Foo<T> FindOneFoo();
+    }
 
-	public class Foo<T>
-	{
-		public T GetOne()
-		{
-			return default(T);
-		}
-	}
+    public class Foo<T>
+    {
+        public T GetOne()
+        {
+            return default(T);
+        }
+    }
 
-	public interface IFooWithIntPtr
-	{
-		IntPtr Buffer(UInt32 index);
-	}
+    public interface IFooWithIntPtr
+    {
+        IntPtr Buffer(UInt32 index);
+    }
 }

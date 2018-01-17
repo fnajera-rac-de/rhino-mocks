@@ -27,37 +27,36 @@
 #endregion
 
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Ross
-	{
-		[Fact]
-		public void GenericMethodWithConstrait()
-		{
-			IClass1 class1 = MockRepository.Mock<IClass1>();
+    public class FieldProblem_Ross
+    {
+        [Fact]
+        public void GenericMethodWithConstrait()
+        {
+            IClass1 class1 = MockRepository.Mock<IClass1>();
+            class1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             IClass2 class2 = MockRepository.Mock<IClass2>();
+            class2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             class1.Expect(x => x.Method1<int>(1));
             class2.Expect(x => x.Method2(new ExampleClass()));
-		}
+        }
 
-		public interface IClass1
-		{
-			void Method1<T1>(T1 t1);
-		}
+        public interface IClass1
+        {
+            void Method1<T1>(T1 t1);
+        }
 
-		public interface IClass2
-		{
-			void Method2<T2>(T2 t2) where T2 : class;
-		}
+        public interface IClass2
+        {
+            void Method2<T2>(T2 t2) where T2 : class;
+        }
 
         public class ExampleClass
         {
         }
-	}
+    }
 }

@@ -27,10 +27,8 @@
 #endregion
 
 
-using System;
-using System.Text;
-using Xunit;
 using System.Web.UI;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
@@ -40,6 +38,7 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         public void MockWebUIPageClass()
         {
             Page page = MockRepository.Mock<Page>();
+            page.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             page.Expect(x => x.Validate());
 
@@ -50,8 +49,9 @@ namespace Rhino.Mocks.Tests.FieldsProblem
         [Fact]
         public void MockClassWithVirtualMethodCallFromConstructor()
         {
-            ClassWithVirtualMethodCallFromConstructor cwvmcfc = 
+            ClassWithVirtualMethodCallFromConstructor cwvmcfc =
                 MockRepository.Mock<ClassWithVirtualMethodCallFromConstructor>();
+            cwvmcfc.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.NotNull(cwvmcfc);
 

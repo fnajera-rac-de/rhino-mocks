@@ -33,130 +33,130 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests.Impl
 {
-	public class ValidateTests
-	{
-		[Fact]
-		public void ArgsEqualWhenNoArgs()
-		{
+    public class ValidateTests
+    {
+        [Fact]
+        public void ArgsEqualWhenNoArgs()
+        {
             Assert.True(Equal.CollectionsAreEqual(new object[0], new object[0]));
-		}
+        }
 
-		[Fact]
-		public void HandlingArraysWithNull()
-		{
+        [Fact]
+        public void HandlingArraysWithNull()
+        {
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, null }, new object[] { 1, "43" }));
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, "43", 5.2f }, new object[] { 1, null }));
             Assert.True(Equal.CollectionsAreEqual(new object[] { null, "43" }, new object[] { null, "43" }));
-	
-		}
 
-		[Fact]
-		public void ArgsEqualWithDifferentNumberOfParameters()
-		{
+        }
+
+        [Fact]
+        public void ArgsEqualWithDifferentNumberOfParameters()
+        {
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, "43", 5.2f }, new object[] { 1, "43" }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWhenArgsMatch()
-		{
+        [Fact]
+        public void ArgsEqualWhenArgsMatch()
+        {
             Assert.True(Equal.CollectionsAreEqual(new object[] { 1, "43", 5.2f }, new object[] { 1, "43", 5.2f }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWhenArgsMismatch()
-		{
+        [Fact]
+        public void ArgsEqualWhenArgsMismatch()
+        {
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, "43", 5.1f }, new object[] { 1, "43", 6.4f }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithArrayReferenceEqual()
-		{
-			object[] arr = new object[3] {"1", 2, 4.5f};
+        [Fact]
+        public void ArgsEqualWithArrayReferenceEqual()
+        {
+            object[] arr = new object[3] { "1", 2, 4.5f };
             Assert.True(Equal.CollectionsAreEqual(new object[] { 1, arr }, new object[] { 1, arr }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithArrayContentEqual()
-		{
-			object[] arr1 = new object[3] {"1", 2, 4.5f},
-				arr2 = new object[3] {"1", 2, 4.5f};
+        [Fact]
+        public void ArgsEqualWithArrayContentEqual()
+        {
+            object[] arr1 = new object[3] { "1", 2, 4.5f },
+                arr2 = new object[3] { "1", 2, 4.5f };
             Assert.True(Equal.CollectionsAreEqual(new object[] { 1, arr2 }, new object[] { 1, arr1 }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithArrayContentDifferent()
-		{
-			object[] arr1 = new object[3] {"1", 2, 4.5f},
-				arr2 = new object[3] {"1", 5, 4.5f};
+        [Fact]
+        public void ArgsEqualWithArrayContentDifferent()
+        {
+            object[] arr1 = new object[3] { "1", 2, 4.5f },
+                arr2 = new object[3] { "1", 5, 4.5f };
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, arr1 }, new object[] { 1, arr2 }));
 
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithArrayContentLengthDifferent()
-		{
-			object[] arr1 = new object[3] {"1", 2, 4.5f},
-				arr2 = new object[2] {"1", 5};
+        [Fact]
+        public void ArgsEqualWithArrayContentLengthDifferent()
+        {
+            object[] arr1 = new object[3] { "1", 2, 4.5f },
+                arr2 = new object[2] { "1", 5 };
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, arr1 }, new object[] { 1, arr2 }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithStringArray()
-		{
-			string[] str1 = new string[] {"", "1", "1234"},
-				str2 = new string[] {"1", "1234", "54321"};
+        [Fact]
+        public void ArgsEqualWithStringArray()
+        {
+            string[] str1 = new string[] { "", "1", "1234" },
+                str2 = new string[] { "1", "1234", "54321" };
             Assert.False(Equal.CollectionsAreEqual(str1, str2));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithCollectionReferenceEqual()
-		{
-			Queue queue = new Queue(3);
-			queue.Enqueue("1");
-			queue.Enqueue(2);
-			queue.Enqueue(4.5f);
+        [Fact]
+        public void ArgsEqualWithCollectionReferenceEqual()
+        {
+            Queue queue = new Queue(3);
+            queue.Enqueue("1");
+            queue.Enqueue(2);
+            queue.Enqueue(4.5f);
             Assert.True(Equal.CollectionsAreEqual(new object[] { 1, queue }, new object[] { 1, queue }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithCollectionContentEqual()
-		{
-			Queue queue1 = new Queue(3);
-			queue1.Enqueue("1");
-			queue1.Enqueue(2);
-			queue1.Enqueue(4.5f);
-			Queue queue2 = new Queue(3);
-			queue2.Enqueue("1");
-			queue2.Enqueue(2);
-			queue2.Enqueue(4.5f);
+        [Fact]
+        public void ArgsEqualWithCollectionContentEqual()
+        {
+            Queue queue1 = new Queue(3);
+            queue1.Enqueue("1");
+            queue1.Enqueue(2);
+            queue1.Enqueue(4.5f);
+            Queue queue2 = new Queue(3);
+            queue2.Enqueue("1");
+            queue2.Enqueue(2);
+            queue2.Enqueue(4.5f);
             Assert.True(Equal.CollectionsAreEqual(new object[] { 1, queue1 }, new object[] { 1, queue2 }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithCollectionContentDifferent()
-		{
-			Queue queue1 = new Queue(3);
-			queue1.Enqueue("1");
-			queue1.Enqueue(2);
-			queue1.Enqueue(4.5f);
-			Queue queue2 = new Queue(3);
-			queue2.Enqueue("1");
-			queue2.Enqueue(5);
-			queue2.Enqueue(4.5f);
+        [Fact]
+        public void ArgsEqualWithCollectionContentDifferent()
+        {
+            Queue queue1 = new Queue(3);
+            queue1.Enqueue("1");
+            queue1.Enqueue(2);
+            queue1.Enqueue(4.5f);
+            Queue queue2 = new Queue(3);
+            queue2.Enqueue("1");
+            queue2.Enqueue(5);
+            queue2.Enqueue(4.5f);
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, queue1 }, new object[] { 1, queue2 }));
-		}
+        }
 
-		[Fact]
-		public void ArgsEqualWithCollectionContentLengthDifferent()
-		{
-			Queue queue1 = new Queue(3);
-			queue1.Enqueue("1");
-			queue1.Enqueue(2);
-			queue1.Enqueue(4.5f);
-			Queue queue2 = new Queue(2);
-			queue2.Enqueue("1");
-			queue2.Enqueue(5);
+        [Fact]
+        public void ArgsEqualWithCollectionContentLengthDifferent()
+        {
+            Queue queue1 = new Queue(3);
+            queue1.Enqueue("1");
+            queue1.Enqueue(2);
+            queue1.Enqueue(4.5f);
+            Queue queue2 = new Queue(2);
+            queue2.Enqueue("1");
+            queue2.Enqueue(5);
             Assert.False(Equal.CollectionsAreEqual(new object[] { 1, queue1 }, new object[] { 1, queue2 }));
-		}
-	}
+        }
+    }
 }

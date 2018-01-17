@@ -28,35 +28,36 @@
 
 using System;
 using Xunit;
-using Rhino.Mocks.Interfaces;
 
 namespace Rhino.Mocks.Tests
 {
-	
-	public class StubTest
-	{
-		[Fact]
-		public void StaticAccessorForStub()
-		{
+
+    public class StubTest
+    {
+        [Fact]
+        public void StaticAccessorForStub()
+        {
             IAnimal animal = MockRepository.Mock<IAnimal>();
-			animal.Eyes = 2;
-			Assert.Equal(2, animal.Eyes );
-		}
+            animal.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            animal.Eyes = 2;
+            Assert.Equal(2, animal.Eyes);
+        }
 
-		[Fact]
-		public void StubHasPropertyBehaviorForAllProperties()
-		{
+        [Fact]
+        public void StubHasPropertyBehaviorForAllProperties()
+        {
             IAnimal animal = MockRepository.Mock<IAnimal>();
-			animal.Legs = 4;
-			Assert.Equal(4, animal.Legs);
+            animal.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+            animal.Legs = 4;
+            Assert.Equal(4, animal.Legs);
 
-			animal.Name = "Rose";
-			Assert.Equal("Rose", animal.Name);
+            animal.Name = "Rose";
+            Assert.Equal("Rose", animal.Name);
 
-			Assert.Null(animal.Species);
-			animal.Species = "Caucasusian Shepherd";
-			Assert.Equal("Caucasusian Shepherd", animal.Species);
-		}
+            Assert.Null(animal.Species);
+            animal.Species = "Caucasusian Shepherd";
+            Assert.Equal("Caucasusian Shepherd", animal.Species);
+        }
 
         //[Fact]
         //public void CanRegisterToEventsAndRaiseThem()
@@ -80,36 +81,39 @@ namespace Rhino.Mocks.Tests
         //    Assert.True(raised);
         //}
 
-		[Fact]
-		public void CallingMethodOnStubsDoesNotCreateExpectations()
-		{
+        [Fact]
+        public void CallingMethodOnStubsDoesNotCreateExpectations()
+        {
             IAnimal animal = MockRepository.Mock<IAnimal>();
+            animal.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             animal.Legs = 4;
             animal.Name = "Rose";
             animal.Species = "Caucasusian Shepherd";
             animal.Stub(x => x.GetMood());
 
-			animal.VerifyAllExpectations();
-		}
+            animal.VerifyAllExpectations();
+        }
 
-		[Fact]
-		public void DemoLegsProperty()
-		{
+        [Fact]
+        public void DemoLegsProperty()
+        {
             IAnimal animalStub = MockRepository.Mock<IAnimal>();
+            animalStub.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
-			animalStub.Legs = 0;
-			Assert.Equal(0, animalStub.Legs);
+            animalStub.Legs = 0;
+            Assert.Equal(0, animalStub.Legs);
 
-			SomeClass instance = new SomeClass(animalStub);
-			instance.SetLegs(10);
-			Assert.Equal(10, animalStub.Legs);
-		}
+            SomeClass instance = new SomeClass(animalStub);
+            instance.SetLegs(10);
+            Assert.Equal(10, animalStub.Legs);
+        }
 
-		[Fact]
-		public void CanCreateExpectationOnMethod()
-		{
+        [Fact]
+        public void CanCreateExpectationOnMethod()
+        {
             IAnimal animal = MockRepository.Mock<IAnimal>();
+            animal.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             animal.Legs = 4;
             animal.Name = "Rose";
@@ -117,34 +121,34 @@ namespace Rhino.Mocks.Tests
             animal.Expect(x => x.GetMood())
                 .Return("Happy");
 
-			Assert.Equal("Happy", animal.GetMood());
+            Assert.Equal("Happy", animal.GetMood());
             animal.VerifyAllExpectations();
-		}
-	}
+        }
+    }
 
-	public interface IAnimal
-	{
-		int Legs { get; set; }
-		int Eyes { get; set; }
-		string Name { get; set; }
-		string Species { get; set; }
+    public interface IAnimal
+    {
+        int Legs { get; set; }
+        int Eyes { get; set; }
+        string Name { get; set; }
+        string Species { get; set; }
 
-		event EventHandler Hungry;
-		string GetMood();
-	}
+        event EventHandler Hungry;
+        string GetMood();
+    }
 
-	public class SomeClass
-	{
-		private IAnimal animal;
+    public class SomeClass
+    {
+        private IAnimal animal;
 
-		public SomeClass(IAnimal animal)
-		{
-			this.animal = animal;
-		}
+        public SomeClass(IAnimal animal)
+        {
+            this.animal = animal;
+        }
 
-		public void SetLegs(int count)
-		{
-			animal.Legs = count;
-		}
-	}
+        public void SetLegs(int count)
+        {
+            animal.Legs = count;
+        }
+    }
 }

@@ -4,11 +4,13 @@ namespace Rhino.Mocks.Tests.FieldsProblem
 {
     public class FieldProblem_Greg
     {
-		[Fact]
+        [Fact]
         public void IgnoreArguments()
         {
             IFoo myFoo = MockRepository.Mock<IFoo>();
+            myFoo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             IBar<int> myBar = MockRepository.Mock<IBar<int>>();
+            myBar.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             myFoo.Expect(x => x.RunBar(myBar))
                 .IgnoreArguments()

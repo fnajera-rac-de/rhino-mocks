@@ -26,24 +26,24 @@
 #endregion
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-    
+
     public class StrictMockTests
     {
         public class TestClass : MarshalByRefObject
         {
             public TestClass(string unused)
             {
-                throw new InvalidCastException("Real method should never be called"); 
+                throw new InvalidCastException("Real method should never be called");
             }
 
-            public void Method() 
-            { 
-                throw new InvalidCastException("Real method should never be called"); 
+            public void Method()
+            {
+                throw new InvalidCastException("Real method should never be called");
             }
 
             public int MethodReturningInt()
@@ -76,7 +76,7 @@ namespace Rhino.Mocks.Tests
                 throw new InvalidCastException("Real method should never be called");
             }
 
-            public T GenericMethodWithGenericParam<T>( T parameter )
+            public T GenericMethodWithGenericParam<T>(T parameter)
             {
                 throw new InvalidCastException("Real method should never be called");
             }
@@ -111,9 +111,10 @@ namespace Rhino.Mocks.Tests
         public void CanMockVoidMethod()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.Method());
-            
+
             t.Method();
             t.VerifyAllExpectations();
         }
@@ -122,18 +123,20 @@ namespace Rhino.Mocks.Tests
         public void ThrowOnUnexpectedVoidMethod()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Method();
 
-        	Assert.Throws<ExpectationViolationException>(
-				() => t.VerifyExpectations(true));
+            Assert.Throws<ExpectationViolationException>(
+                () => t.VerifyExpectations(true));
         }
 
         [Fact]
         public void CanMockMethodReturningInt()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.MethodReturningInt())
                 .Return(42);
 
@@ -145,7 +148,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockMethodReturningString()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.MethodReturningString())
                 .Return("foo");
 
@@ -157,7 +161,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockMethodGettingParameters()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.MethodGettingParameters(42, "foo"))
                 .Return("bar");
 
@@ -169,7 +174,8 @@ namespace Rhino.Mocks.Tests
         public void CanRejectIncorrectParameters()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.MethodGettingParameters(42, "foo"))
                 .Return("bar");
 
@@ -183,7 +189,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockPropertyGet()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.StringProperty)
                 .Return("foo");
 
@@ -195,7 +202,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockPropertySet()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.StringProperty = "foo");
 
             t.StringProperty = "foo";
@@ -206,19 +214,21 @@ namespace Rhino.Mocks.Tests
         public void CanRejectIncorrectPropertySet()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.StringProperty = "foo");
 
             t.StringProperty = "bar";
 
             Assert.Throws<ExpectationViolationException>(
-				() => t.VerifyExpectations(true));
+                () => t.VerifyExpectations(true));
         }
 
         [Fact]
         public void CanMockGenericClass()
         {
             GenericTestClass<string> t = MockRepository.Mock<GenericTestClass<string>>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             t.Expect(x => x.Method("foo"))
                 .Return(42);
@@ -231,7 +241,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockGenericMethod()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.GenericMethod<string>("foo"))
                 .Return(42);
 
@@ -239,26 +250,28 @@ namespace Rhino.Mocks.Tests
             t.VerifyAllExpectations();
         }
 
-		[Fact]
-		public void CanMockGenericMethod_WillErrorOnWrongType()
-		{
+        [Fact]
+        public void CanMockGenericMethod_WillErrorOnWrongType()
+        {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.GenericMethod<string>("foo"))
                 .Return(42);
-			
+
             //Assert.Equal(42, t.GenericMethod<int>("foo"));
             t.GenericMethod<int>("foo");
 
-			Assert.Throws<ExpectationViolationException>(
-				() => t.VerifyExpectations(true));
-		}
+            Assert.Throws<ExpectationViolationException>(
+                () => t.VerifyExpectations(true));
+        }
 
         [Fact]
         public void CanMockGenericMethodReturningGenericType()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.GenericMethodReturningGenericType<string>("foo"))
                 .Return("bar");
 
@@ -270,7 +283,8 @@ namespace Rhino.Mocks.Tests
         public void CanMockGenericMethodWithGenericParam()
         {
             TestClass t = MockRepository.Mock<TestClass>();
-            
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             t.Expect(x => x.GenericMethodWithGenericParam<string>("foo"))
                 .Return("bar");
 
@@ -282,6 +296,7 @@ namespace Rhino.Mocks.Tests
         public void CanMockGenericMethodInGenericClass()
         {
             GenericTestClass<string> t = MockRepository.Mock<GenericTestClass<string>>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             t.Expect(x => x.GenericMethod<int>("foo"))
                 .Return(42);
@@ -290,35 +305,39 @@ namespace Rhino.Mocks.Tests
             t.VerifyAllExpectations();
         }
 
-		[Fact]
-		public void CanMockAppDomain()
-		{
+        [Fact]
+        public void CanMockAppDomain()
+        {
             AppDomain appDomain = MockRepository.Mock<AppDomain>();
+            appDomain.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             appDomain.Expect(x => x.BaseDirectory)
                 .Return("/home/user/ayende");
-			
-			Assert.Equal(appDomain.BaseDirectory, "/home/user/ayende" );
-            appDomain.VerifyAllExpectations();
-		}
 
-		[Fact]
-    	public void NotCallingExpectedMethodWillCauseVerificationError()
-    	{
+            Assert.Equal(appDomain.BaseDirectory, "/home/user/ayende");
+            appDomain.VerifyAllExpectations();
+        }
+
+        [Fact]
+        public void NotCallingExpectedMethodWillCauseVerificationError()
+        {
             AppDomain appDomain = MockRepository.Mock<AppDomain>();
+            appDomain.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             appDomain.Expect(x => x.BaseDirectory)
                 .Return("/home/user/ayende");
 
             Assert.Throws<ExpectationViolationException>(
                 () => appDomain.VerifyAllExpectations());
-    	}
+        }
 
         [Fact]
         public void CanMockMethodAcceptingTestClass()
         {
             TestClass t1 = MockRepository.Mock<TestClass>();
+            t1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             TestClass t2 = MockRepository.Mock<TestClass>();
+            t2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             t1.Expect(x => x.MethodAcceptingTestClass(t2));
 
@@ -337,9 +356,12 @@ namespace Rhino.Mocks.Tests
             {
 
                 TestClass t1 = MockRepository.Mock<TestClass>();
+                t1.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
                 TestClass t2 = MockRepository.Mock<TestClass>();
+                t2.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
                 TestClass t3 = MockRepository.Mock<TestClass>();
-                
+                t3.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
                 t2Text = t2.ToString();
                 t3Text = t3.ToString();
 
@@ -365,6 +387,7 @@ namespace Rhino.Mocks.Tests
         public void StrictMockGetTypeReturnsMockedType()
         {
             TestClass t = MockRepository.Mock<TestClass>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.Same(typeof(TestClass), t.GetType());
         }
 
@@ -372,6 +395,7 @@ namespace Rhino.Mocks.Tests
         public void StrictMockGetHashCodeWorks()
         {
             TestClass t = MockRepository.Mock<TestClass>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             t.GetHashCode();
         }
 
@@ -379,6 +403,7 @@ namespace Rhino.Mocks.Tests
         public void StrictMockToStringReturnsDescription()
         {
             TestClass t = MockRepository.Mock<TestClass>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             int hashCode = t.GetHashCode();
             string toString = t.ToString();
@@ -389,6 +414,7 @@ namespace Rhino.Mocks.Tests
         public void StrictMockEquality()
         {
             TestClass t = MockRepository.Mock<TestClass>();
+            t.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.False(t.Equals(null));
             Assert.False(t.Equals(42));

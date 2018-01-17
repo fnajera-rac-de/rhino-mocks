@@ -28,83 +28,84 @@
 
 
 using System;
-using Xunit;
 using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class DynamicMockTests : IDisposable
-	{
-		IDemo demo;
+    public class DynamicMockTests : IDisposable
+    {
+        IDemo demo;
 
-		public DynamicMockTests()
-		{
+        public DynamicMockTests()
+        {
             demo = MockRepository.Mock<IDemo>();
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		public void Dispose()
-		{
-		}
+        public void Dispose()
+        {
+        }
 
-		[Fact]
-		public void CanCallUnexpectedMethodOnDynamicMock()
-		{
+        [Fact]
+        public void CanCallUnexpectedMethodOnDynamicMock()
+        {
             Assert.Equal(0, demo.ReturnIntNoArgs());
-		}
+        }
 
-		[Fact]
-		public void CanSetupExpectations()
-		{
+        [Fact]
+        public void CanSetupExpectations()
+        {
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Return(30);
 
             Assert.Equal(30, demo.ReturnIntNoArgs());
             Assert.Equal(0, demo.ReturnIntNoArgs());
-		}
+        }
 
-		[Fact]
-		public void ExpectationExceptionWithDynamicMock()
-		{
-			demo.Expect(x => x.ReturnIntNoArgs())
+        [Fact]
+        public void ExpectationExceptionWithDynamicMock()
+        {
+            demo.Expect(x => x.ReturnIntNoArgs())
                 .Return(30);
 
             Assert.Null(demo.ReturnStringNoArgs());
-			
-			Assert.Throws<ExpectationViolationException>(
-				() => demo.VerifyAllExpectations());	
-		}
 
-		[Fact]
-		public void SetupResultWorksWithDynamicMocks()
-		{
+            Assert.Throws<ExpectationViolationException>(
+                () => demo.VerifyAllExpectations());
+        }
+
+        [Fact]
+        public void SetupResultWorksWithDynamicMocks()
+        {
             demo.Expect(x => x.StringArgString("Ayende"))
                 .Return("Rahien")
                 .Repeat.Any();
 
-			for (int i = 0; i < 43; i++)
-			{
+            for (int i = 0; i < 43; i++)
+            {
                 Assert.Equal("Rahien", demo.StringArgString("Ayende"));
                 Assert.Null(demo.StringArgString("another"));
-			}
-		}
+            }
+        }
 
-		[Fact]
-		public void ExpectNeverForDyanmicMock()
-		{
+        [Fact]
+        public void ExpectNeverForDyanmicMock()
+        {
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Repeat.Never();
-		}
+        }
 
-		[Fact]
-		public void ExpectNeverForDyanmicMockThrowsIfOccurs()
-		{
-			demo.Expect(x => x.ReturnIntNoArgs())
+        [Fact]
+        public void ExpectNeverForDyanmicMockThrowsIfOccurs()
+        {
+            demo.Expect(x => x.ReturnIntNoArgs())
                 .Repeat.Never();
 
             demo.ReturnIntNoArgs();
 
-			Assert.Throws<ExpectationViolationException>(
-				() => demo.VerifyExpectations());
-		}
-	}
+            Assert.Throws<ExpectationViolationException>(
+                () => demo.VerifyExpectations());
+        }
+    }
 }

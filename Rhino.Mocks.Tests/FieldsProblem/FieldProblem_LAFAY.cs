@@ -6,10 +6,11 @@ namespace Rhino.Mocks.Tests.FieldsProblem
     public class FieldProblem_LAFAY
     {
         private IDemo demo;
-        
-		public FieldProblem_LAFAY()
+
+        public FieldProblem_LAFAY()
         {
             demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]

@@ -27,42 +27,42 @@
 #endregion
 
 
-using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests.FieldsProblem
 {
-	public class FieldProblem_Michael
-	{
-		public interface IProvider
-		{
-			char GetChar();
-			int GetInt32();
-		}
-		
-		[Fact]
-		public void TestChar()
-		{
-			IProvider mockProvider = MockRepository.Mock<IProvider>();
+    public class FieldProblem_Michael
+    {
+        public interface IProvider
+        {
+            char GetChar();
+            int GetInt32();
+        }
+
+        [Fact]
+        public void TestChar()
+        {
+            IProvider mockProvider = MockRepository.Mock<IProvider>();
+            mockProvider.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockProvider.Expect(x => x.GetChar())
                 .Return('X');
 
             // actual is a random char
-			Assert.Equal('X', mockProvider.GetChar()); 
-		}
+            Assert.Equal('X', mockProvider.GetChar());
+        }
 
-		[Fact]
-		public void TestInt32()
-		{
+        [Fact]
+        public void TestInt32()
+        {
             IProvider mockProvider = MockRepository.Mock<IProvider>();
+            mockProvider.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockProvider.Expect(x => x.GetInt32())
                 .Return(100);
 
             // actual is 100
-			Assert.Equal(100, mockProvider.GetInt32());
-		}
-	}
+            Assert.Equal(100, mockProvider.GetInt32());
+        }
+    }
 }

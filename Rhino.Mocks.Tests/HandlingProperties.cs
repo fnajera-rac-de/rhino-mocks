@@ -28,7 +28,6 @@
 
 
 using System;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests
@@ -36,10 +35,11 @@ namespace Rhino.Mocks.Tests
     public class HandlingProperties
     {
         IDemo demo;
-        
-		public HandlingProperties()
+
+        public HandlingProperties()
         {
             demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Rhino.Mocks.Tests
         [Fact]
         public void ExceptionIfPropHasOnlySetter()
         {
-        	Assert.Throws<InvalidOperationException>(
+            Assert.Throws<InvalidOperationException>(
                 () => demo.ExpectProperty(x => x.WriteOnly));
         }
 
@@ -76,6 +76,7 @@ namespace Rhino.Mocks.Tests
         public void IndexedPropertiesSupported()
         {
             IWithIndexers with = MockRepository.Mock<IWithIndexers>();
+            with.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             //with.Expect(x => x[1])
             //    .PropertyBehavior();
@@ -100,6 +101,7 @@ namespace Rhino.Mocks.Tests
         public void IndexPropertyWhenValueTypeAndNotFoundThrows()
         {
             IWithIndexers with = MockRepository.Mock<IWithIndexers>();
+            with.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             with.ExpectProperty(x => x[1]);
 
@@ -111,6 +113,7 @@ namespace Rhino.Mocks.Tests
         public void IndexPropertyWhenRefTypeAndNotFoundReturnNull()
         {
             IWithIndexers with = MockRepository.Mock<IWithIndexers>();
+            with.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             with.ExpectProperty(x => x["", 3]);
             Assert.Null(with["", 2]);
@@ -120,7 +123,7 @@ namespace Rhino.Mocks.Tests
         {
             int this[int x] { get; set; }
 
-            string this[string n, int y] { get; set; } 
+            string this[string n, int y] { get; set; }
         }
     }
 }

@@ -29,12 +29,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-    
+
     public class MockingGenericInterfaces : IDisposable
     {
         public MockingGenericInterfaces()
@@ -49,6 +48,7 @@ namespace Rhino.Mocks.Tests
         public void MockAGenericInterface()
         {
             IList<int> list = MockRepository.Mock<IList<int>>();
+            list.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(list);
 
             list.Expect(x => x.Count)
@@ -62,11 +62,12 @@ namespace Rhino.Mocks.Tests
         public void DynamicMockOfGeneric()
         {
             IList<int> list = MockRepository.Mock<IList<int>>();
+            list.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(list);
 
             list.Expect(x => x.Count)
                 .Return(5);
-            
+
             Assert.Equal(5, list.Count);
             list.Add(4);
 

@@ -1,8 +1,8 @@
 ﻿
-using Xunit;
-using Rhino.Mocks.Interfaces;
-using Rhino.Mocks.Exceptions;
 using System;
+using Rhino.Mocks.Exceptions;
+using Rhino.Mocks.Interfaces;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.Core
 {
@@ -73,6 +73,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Class_Can_Be_Created_From_Repository()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(mock);
             Assert.True(mock is ScenarioObject);
         }
@@ -81,6 +82,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Class_Created_From_Repository_Is_Of_Type_IMockInstance()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var instance = mock as IMockInstance;
             Assert.NotNull(instance);
             Assert.True(mock is ScenarioObject);
@@ -90,6 +92,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Class_Can_Have_An_Expectation_Set_On_Method_With_Void_Return_Type()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x.VoidMethod());
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -99,6 +102,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Class_Can_Have_An_Expectation_Set_On_Method_With_A_Return_Type()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x.StringMethod());
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -108,6 +112,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Exception_Is_Raised_When_An_Expectation_Is_Set_On_NonVirtual_Method()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.Throws<System.InvalidOperationException>(
                 () => mock.Expect(x => x.NonVirtualStringMethod()));
         }
@@ -116,6 +121,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Delegate_Can_Be_Create_From_Repository()
         {
             var mock = MockRepository.Mock<StringScenario>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(mock);
             Assert.True(mock is StringScenario);
         }
@@ -124,6 +130,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Delegate_Created_From_Repository_Is_Of_Type_IMockInstance()
         {
             var mock = MockRepository.Mock<StringScenario>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var instance = mock.Target as IMockInstance;
             Assert.NotNull(instance);
             Assert.True(mock is StringScenario);
@@ -133,6 +140,7 @@ namespace Rhino.Mocks.Tests.Core
         void Mock_Delegate_With_Void_Return_Type_Can_Have_An_Expectation_Set()
         {
             var mock = MockRepository.Mock<VoidScenario>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x("mike", "meisinger"));
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -142,6 +150,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Delegate_With_Return_Type_Can_Have_An_Expectation_Set()
         {
             var mock = MockRepository.Mock<StringScenario>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x("mike", "meisinger"));
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -151,6 +160,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Is_Assigned_Invocation_Proxy_Once_Proxy_For_A_Mock_Class_Is_Created()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             var instance = mock as IMockInstance;
             Assert.NotNull(instance.ProxyInstance);
@@ -168,6 +178,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Has_Method_Invoked_When_Expectation_Indicates_Original_Method_Should_Be_Called()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.StringMethod())
                 .CallOriginalMethod();
 
@@ -178,6 +189,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Does_Not_Return_Expected_Value_When_Expectation_Indicates_Original_Method_Should_Be_Called()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.StringMethodEcho("meisinger"))
                 .CallOriginalMethod();
 
@@ -189,6 +201,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_Can_Be_Created_From_Repository()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Assert.NotNull(mock);
             Assert.True(mock is IScenarioObject);
         }
@@ -197,6 +210,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_Created_From_Repository_Is_Of_Type_IMockInstance()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var instance = mock as IMockInstance;
             Assert.NotNull(instance);
             Assert.True(mock is IScenarioObject);
@@ -206,6 +220,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_Can_Have_An_Expectation_Set_On_Method_With_Void_Return_Type()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x.VoidMethod());
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -215,6 +230,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_Can_Have_An_Expectation_Set_On_Method_With_A_Return_Type()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x.StringMethod());
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -224,6 +240,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_Can_Have_A_Generic_Expectation_Set_On_Method_With_A_Return_Type()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var options = mock.Expect(x => x.GenericMethod<int>());
             Assert.NotNull(mock);
             Assert.NotNull(options);
@@ -233,7 +250,8 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Is_Assigned_Invocation_Proxy_Once_Proxy_For_A_Mock_Interface_Is_Created()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
-            
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             var instance = mock as IMockInstance;
             Assert.NotNull(instance.ProxyInstance);
 
@@ -250,6 +268,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Can_Distinguish_Between_Duplicate_Method_Expectation_With_Unique_Arguments()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.StringMethodEcho("one"))
                 .Return("value one");
@@ -269,7 +288,9 @@ namespace Rhino.Mocks.Tests.Core
         {
             var wasCalled = false;
             var argumentMock = MockRepository.Mock<IScenarioArgument>();
+            argumentMock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             argumentMock.ExpectProperty(x => x.Age)
                 .Return(15);
@@ -297,7 +318,8 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Can_Distinguish_Between_Method_Expectation_With_Generic_Arguments()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
-            
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+
             mock.Expect(x => x.StringMethodEcho(Arg<string>.Is.Anything))
                 .Return("rhino")
                 .Repeat.Any();
@@ -313,6 +335,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Is_Called_Twice_When_Expectation_Is_Set_To_Repeat_Twice()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.StringMethodEcho("ayende"))
                 .Return("rahien")
@@ -336,6 +359,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Is_Called_With_Invalid_Arguments_When_Expectation_Is_Set_To_Ignore_Arguments()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.StringMethodEcho("ayende"))
                 .IgnoreArguments()
@@ -361,7 +385,9 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Instance_Maintains_Separate_Expectations()
         {
             var mockOne = MockRepository.Partial<ScenarioObject>();
+            mockOne.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             var mockTwo = MockRepository.Partial<ScenarioObject>();
+            mockTwo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mockOne.Expect(x => x.StringMethod())
                 .Return("one")
@@ -373,7 +399,7 @@ namespace Rhino.Mocks.Tests.Core
 
             var resultTwo = mockTwo.StringMethod();
             var resultOne = mockOne.StringMethod();
-            
+
             Assert.Equal("one", resultOne);
             Assert.Equal("two", resultTwo);
         }
@@ -382,6 +408,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Mock_Interface_With_Event_Can_Have_Expectation_Set_Against_Event()
         {
             var mock = MockRepository.Mock<IScenarioEvent>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.ExpectEvent(x => x.ScenarioEvent += null);
         }
 
@@ -389,6 +416,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Verification_Throws_Exception_When_Expectations_Set_Against_Mock_Class_Are_Not_Met()
         {
             var mock = MockRepository.Partial<ScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.StringMethodEcho(Arg.Text.StartsWith("m")))
                 .Return("one")
@@ -408,6 +436,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Verification_Throws_Exception_When_Expectations_Set_Against_Mock_Delegate_Are_Not_Met()
         {
             var mock = MockRepository.Mock<StringScenario>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x("mike", "meisinger"))
                 .Return("one")
                 .Repeat.Times(3);
@@ -425,6 +454,7 @@ namespace Rhino.Mocks.Tests.Core
         public void When_Asserting_A_Method_Was_Called_With_Expectation_No_Exception_Is_Thrown_When_Method_Was_Called()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.StringMethodEcho("mike"))
                 .Return("true");
 
@@ -438,6 +468,7 @@ namespace Rhino.Mocks.Tests.Core
         public void When_Asserting_A_Method_Was_Called_With_No_Expectation_No_Exception_Is_Thrown_When_Method_Was_Called()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.StringMethodEcho("mike");
 
             mock.AssertWasCalled(x => x.StringMethodEcho("mike"));
@@ -447,6 +478,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Expectation_Throws_Exception_When_Setting_Expectation_To_Throw()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.Expect(x => x.StringMethod())
                 .Throws<System.InvalidTimeZoneException>();
@@ -458,6 +490,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Can_Create_Expectation_For_A_Property_With_Default_Behavior()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.ExpectProperty(x => x.Name)
                 .Return("mike");
@@ -472,6 +505,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Property_With_Default_Behavior_Ignores_Set_Values_If_Expectation_Has_Return_Value()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.ExpectProperty(x => x.Name)
                 .Return("returned_value");
@@ -488,6 +522,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Property_With_Default_Behavior_Tracks_Return_Values_When_Different_Expectations_Are_Set()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.ExpectProperty(x => x.Name = "first")
                 .Return("First");
@@ -511,6 +546,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Property_With_Default_Behavior_And_A_Get_Expectation_Defaults_To_The_Return_Value()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.ExpectProperty(x => x.Name)
                 .Return("Default");
@@ -541,6 +577,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Property_With_Default_Behavior_Works_With_Dynamic_Property_Handling()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             mock.ExpectProperty(x => x.Name = "first")
                 .Return("First");
@@ -568,6 +605,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Setting_A_Return_Value_For_Write_Only_Property_Throws_Exception()
         {
             var mock = MockRepository.Mock<IScenarioArgument>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             Assert.Throws<System.InvalidOperationException>(() =>
                 mock.ExpectProperty(x => x.MessageIn = "in")
@@ -578,6 +616,7 @@ namespace Rhino.Mocks.Tests.Core
         public void Can_Create_Expectation_For_Event()
         {
             var mock = MockRepository.Mock<IScenarioEvent>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             var eventValue = 0;
             var noneWasCalled = false;
@@ -600,10 +639,11 @@ namespace Rhino.Mocks.Tests.Core
         public void Can_Get_Arguments_For_Call_Made_On_Method()
         {
             var mock = MockRepository.Mock<IScenarioObject>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.StringMethodEcho("mike");
             mock.StringMethodEcho("meisinger");
 
-            var actuals = mock.GetArgumentsForCallsMadeOn(x => 
+            var actuals = mock.GetArgumentsForCallsMadeOn(x =>
                 x.StringMethodEcho(Arg<string>.Is.Anything));
 
             Assert.Equal(2, actuals.Length);

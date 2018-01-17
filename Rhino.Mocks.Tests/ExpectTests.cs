@@ -31,54 +31,55 @@ using Xunit;
 
 namespace Rhino.Mocks.Tests
 {
-	public class ExpectTests : IDisposable
-	{
-		private IDemo demo;
+    public class ExpectTests : IDisposable
+    {
+        private IDemo demo;
 
-		public ExpectTests()
-		{
+        public ExpectTests()
+        {
             demo = MockRepository.Mock<IDemo>();
-		}
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
+        }
 
-		public void Dispose()
-		{
+        public void Dispose()
+        {
             demo.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void CanExpect()
-		{
+        [Fact]
+        public void CanExpect()
+        {
             demo.Expect(x => x.Prop)
                 .Return("Ayende");
 
-			Assert.Equal("Ayende", demo.Prop);
-		}
+            Assert.Equal("Ayende", demo.Prop);
+        }
 
-		[Fact(Skip = "Test No Longer Valid (Expect removed)")]
-		public void PassNonMock()
-		{
+        [Fact(Skip = "Test No Longer Valid (Expect removed)")]
+        public void PassNonMock()
+        {
             //Assert.Throws<InvalidOperationException>(
             //    "The object 'System.Object' is not a mocked object.",
             //    () => Expect.On(new object()));
-		}
+        }
 
-		[Fact]
-		public void CanUseAnonymousDelegatesToCallVoidMethods()
-		{
+        [Fact]
+        public void CanUseAnonymousDelegatesToCallVoidMethods()
+        {
             demo.Expect(x => x.VoidNoArgs())
                 .Throws<ArgumentNullException>();
 
-			Assert.Throws<ArgumentNullException>(() => demo.VoidNoArgs());
-		}
+            Assert.Throws<ArgumentNullException>(() => demo.VoidNoArgs());
+        }
 
-		[Fact]
-		public void CanUseAnonymousDelegatesToCallVoidMethods_WithoutAnonymousDelegate()
-		{
+        [Fact]
+        public void CanUseAnonymousDelegatesToCallVoidMethods_WithoutAnonymousDelegate()
+        {
             demo.Expect(x => x.VoidNoArgs())
                 .Throws<ArgumentNullException>();
 
-			Assert.Throws<ArgumentNullException>(() => demo.VoidNoArgs());
-		}
+            Assert.Throws<ArgumentNullException>(() => demo.VoidNoArgs());
+        }
 
         [Fact(Skip = "Test No Longer Valid (Expect removed)")]
         public void Can_Swap_Expect_In_And_Out_With_AAA_Syntax()
@@ -97,34 +98,34 @@ namespace Rhino.Mocks.Tests
             //mock.VerifyAllExpectations();
         }
 
-		[Fact]
-		public void ExpectCallNormal()
-		{
+        [Fact]
+        public void ExpectCallNormal()
+        {
             demo.Expect(x => x.Prop)
                 .Return("ayende");
-			
-			Assert.Equal("ayende", demo.Prop);
-		}
+
+            Assert.Equal("ayende", demo.Prop);
+        }
 
         [Fact(Skip = "Test No Longer Valid (Expect removed)")]
-		public void ExpectWhenNoCallMade()
-		{
+        public void ExpectWhenNoCallMade()
+        {
             //Assert.Throws<InvalidOperationException>(
             //    "The object is not a mock object that belong to this repository.",
             //    () => Expect.Call<object>(null));
-		}
+        }
 
         [Fact(Skip = "Test No Longer Valid (Expect removed)")]
-		public void ExpectOnReplay()
-		{
+        public void ExpectOnReplay()
+        {
             //demo.Expect(x => x.Prop)
             //    .Return("ayende");
-			
+
             //Assert.Equal("ayende", demo.Prop);
 
             //Assert.Throws<InvalidOperationException>(
             //    "Invalid call, the last call has been used or no call has been made (make sure that you are calling a virtual (C#) / Overridable (VB) method).",
             //    () => Expect.Call<object>(null));
-		}
-	}
+        }
+    }
 }

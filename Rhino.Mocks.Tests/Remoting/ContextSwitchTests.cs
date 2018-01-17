@@ -28,28 +28,27 @@
 
 
 using System;
-using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
-using Xunit;
-using Rhino.Mocks.Exceptions;
 using System.Security.Policy;
+using Rhino.Mocks.Exceptions;
+using Xunit;
 
 namespace Rhino.Mocks.Tests.Remoting
 {
 
-	/// <summary>
-	/// Test scenarios where mock objects are called from different
-	/// application domain.
-	/// </summary>
-	public class ContextSwitchTests : IDisposable
-	{
-		private AppDomain otherDomain;
-		private ContextSwitcher contextSwitcher;
+    /// <summary>
+    /// Test scenarios where mock objects are called from different
+    /// application domain.
+    /// </summary>
+    public class ContextSwitchTests : IDisposable
+    {
+        private AppDomain otherDomain;
+        private ContextSwitcher contextSwitcher;
 
-		public ContextSwitchTests()
-		{
+        public ContextSwitchTests()
+        {
             var assemblyName = Assembly.GetExecutingAssembly().FullName;
             var typeName = typeof(ContextSwitcher).FullName;
 
@@ -57,37 +56,40 @@ namespace Rhino.Mocks.Tests.Remoting
             info.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
             info.ApplicationName = Guid.NewGuid().ToString();
 
-            otherDomain = AppDomain.CreateDomain(info.ApplicationName, null, info, 
+            otherDomain = AppDomain.CreateDomain(info.ApplicationName, null, info,
                 new PermissionSet(PermissionState.Unrestricted), new StrongName[0]);
 
-            contextSwitcher = (ContextSwitcher)otherDomain.CreateInstanceAndUnwrap(assemblyName,
+            contextSwitcher = (ContextSwitcher) otherDomain.CreateInstanceAndUnwrap(assemblyName,
                 typeName, false, BindingFlags.Default, null, new object[0], null, null, null);
-		}
+        }
 
         public void Dispose()
-		{
-			AppDomain.Unload(otherDomain);
-		}
+        {
+            AppDomain.Unload(otherDomain);
+        }
 
-		[Fact]
-		public void MockInterface()
-		{
-			IDemo demo = MockRepository.Mock<IDemo>();
+        [Fact]
+        public void MockInterface()
+        {
+            IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Return(54);
 
             demo.Expect(x => x.VoidStringArg("54"));
-			
-			contextSwitcher.DoStuff(demo);
-            demo.VerifyAllExpectations();
-		}
 
-		[Fact]
-		public void MockInterfaceWithSameName()
-		{
-			IDemo demo = MockRepository.Mock<IDemo>();
+            contextSwitcher.DoStuff(demo);
+            demo.VerifyAllExpectations();
+        }
+
+        [Fact]
+        public void MockInterfaceWithSameName()
+        {
+            IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             Other.IDemo remotingDemo = MockRepository.Mock<Other.IDemo>();
+            remotingDemo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Return(54);
@@ -95,76 +97,81 @@ namespace Rhino.Mocks.Tests.Remoting
             demo.Expect(x => x.VoidStringArg("54"));
 
             remotingDemo.Expect(x => x.ProcessString("in"));
-			
-			contextSwitcher.DoStuff(demo);
-			contextSwitcher.DoStuff(remotingDemo);
+
+            contextSwitcher.DoStuff(demo);
+            contextSwitcher.DoStuff(remotingDemo);
 
             demo.VerifyAllExpectations();
             remotingDemo.VerifyAllExpectations();
-		}
+        }
 
-		[Fact]
-		public void MockInterfaceExpectException()
-		{
+        [Fact]
+        public void MockInterfaceExpectException()
+        {
             IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Throws<InvalidOperationException>();
 
-			Assert.Throws<InvalidOperationException>(
-				() => contextSwitcher.DoStuff(demo));
-		}
+            Assert.Throws<InvalidOperationException>(
+                () => contextSwitcher.DoStuff(demo));
+        }
 
-		[Fact]
-		public void MockInterfaceUnexpectedCall()
-		{
-			IDemo demo = MockRepository.Mock<IDemo>();
+        [Fact]
+        public void MockInterfaceUnexpectedCall()
+        {
+            IDemo demo = MockRepository.Mock<IDemo>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.ReturnIntNoArgs())
                 .Return(34);
 
             demo.Expect(x => x.VoidStringArg("bang"));
             contextSwitcher.DoStuff(demo);
-			
-			Assert.Throws<ExpectationViolationException>(
-				() => demo.VerifyExpectations(true));
-		}
 
-		[Fact]
-		public void MockClass()
-		{
-			RemotableDemoClass demo = MockRepository.Mock<RemotableDemoClass>();
+            Assert.Throws<ExpectationViolationException>(
+                () => demo.VerifyExpectations(true));
+        }
+
+        [Fact]
+        public void MockClass()
+        {
+            RemotableDemoClass demo = MockRepository.Mock<RemotableDemoClass>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.Two())
                 .Return(44);
 
-			Assert.Equal(44, contextSwitcher.DoStuff(demo));
+            Assert.Equal(44, contextSwitcher.DoStuff(demo));
             demo.VerifyAllExpectations();
-		}
+        }
 
-		public void MockClassExpectException()
-		{
+        public void MockClassExpectException()
+        {
             RemotableDemoClass demo = MockRepository.Mock<RemotableDemoClass>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.Two())
                 .Throws<InvalidOperationException>();
 
-			Assert.Throws<InvalidOperationException>(
-				() => contextSwitcher.DoStuff(demo));
-		}
+            Assert.Throws<InvalidOperationException>(
+                () => contextSwitcher.DoStuff(demo));
+        }
 
-		[Fact]
-		public void MockClassUnexpectedCall()
-		{
+        [Fact]
+        public void MockClassUnexpectedCall()
+        {
             RemotableDemoClass demo = MockRepository.Mock<RemotableDemoClass>();
+            demo.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
 
             demo.Expect(x => x.Prop)
                 .Return(11);
 
             contextSwitcher.DoStuff(demo);
 
-			Assert.Throws<ExpectationViolationException>(
-				() => demo.VerifyExpectations(true));
-		}
-	}
+            Assert.Throws<ExpectationViolationException>(
+                () => demo.VerifyExpectations(true));
+        }
+    }
 }

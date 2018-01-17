@@ -11,10 +11,11 @@ namespace Rhino.Mocks.Tests.FieldsProblem
             IntPtr parameter;
 
             IFooWithOutIntPtr mock = MockRepository.Mock<IFooWithOutIntPtr>();
+            mock.SetUnexpectedBehavior(UnexpectedCallBehaviors.BaseOrDefault);
             mock.Expect(x => x.GetBar(out Arg<IntPtr>.Out(new IntPtr(3)).Dummy))
                 .IgnoreArguments()
                 .Return(5);
-            
+
             Assert.Equal(5, mock.GetBar(out parameter));
             Assert.Equal(new IntPtr(3), parameter);
             mock.VerifyAllExpectations();
