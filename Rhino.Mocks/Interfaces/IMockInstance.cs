@@ -19,6 +19,12 @@ namespace Rhino.Mocks.Interfaces
         Type[] ImplementedTypes { get; }
 
         /// <summary>
+        /// Defines the behavior of unexpected calls.
+        /// By default, BaseOrThrow.
+        /// </summary>
+        UnexpectedCallBehaviors UnexpectedCallBehavior { get; set; }
+
+        /// <summary>
         /// Indicates whether or not the mock instance
         /// is a partial mock
         /// </summary>
