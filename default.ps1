@@ -79,13 +79,12 @@ task Merge {
 	Remove-Item Rhino.Mocks.Partial.dll -ErrorAction SilentlyContinue 
 	Rename-Item $build_dir\Rhino.Mocks.dll Rhino.Mocks.Partial.dll
 	
-	& $tools_dir\ILMerge\ILMerge.exe Rhino.Mocks.Partial.dll `
+	& $tools_dir\ILRepack\ILRepack.exe Rhino.Mocks.Partial.dll `
 		Castle.Core.dll `
 		/out:Rhino.Mocks.dll `
 		/t:library `
 		/targetplatform:v4 `
-		"/keyfile:$base_dir\meisinger-open-source.snk" `
-		"/internalize:$base_dir\ilmerge.exclude"
+		"/keyfile:$base_dir\meisinger-open-source.snk"
 	if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies!"
     }
