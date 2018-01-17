@@ -32,7 +32,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -57,6 +57,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DebugType>Full</DebugType>
     <NoWarn>1607</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\..\Build\Tests\Release\</OutputPath>
@@ -72,6 +73,7 @@
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <StartAction>Program</StartAction>
@@ -122,6 +124,7 @@
     <Reference Include="System.Web">
       <Name>System.Web</Name>
     </Reference>
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
@@ -158,9 +161,7 @@
     <Compile Include="FieldsProblem\FieldProblem_ Sean.cs" />
     <Compile Include="FieldsProblem\FieldProblem_75_MockingExpcetion.cs" />
     <Compile Include="FieldsProblem\FieldProblem_Adam.cs" />
-    <Compile Include="FieldsProblem\FieldProblem_Aharon.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="FieldsProblem\FieldProblem_Aharon.cs" />
     <Compile Include="FieldsProblem\FieldProblem_Alex.cs" />
     <Compile Include="FieldsProblem\FieldProblem_Alexey.cs" />
     <Compile Include="FieldsProblem\FieldProblem_Andrew.cs" />
