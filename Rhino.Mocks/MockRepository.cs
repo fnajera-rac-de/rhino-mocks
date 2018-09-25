@@ -528,10 +528,13 @@ namespace Rhino.Mocks
         private static ProxyGenerator IdentifyGenerator(Type type)
         {
             ProxyGenerator generator;
-            if (!generators.TryGetValue(type, out generator))
+            lock (generators)
             {
-                generator = new ProxyGenerator();
-                generators[type] = generator;
+                if (!generators.TryGetValue(type, out generator))
+                {
+                    generator = new ProxyGenerator();
+                    generators[type] = generator;
+                }
             }
 
             return generator;
